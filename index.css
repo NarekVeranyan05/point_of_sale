@@ -15,13 +15,6 @@ body {
     height: 100%;
 }
 
-main {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-}
-
 #header {
     display: flex;
     align-items: center;
@@ -36,6 +29,13 @@ main {
     background-color: #F4F7FA;
 }
 
+main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
 .button {
     display: flex;
     align-items: center;
@@ -48,6 +48,7 @@ main {
 
     text-align: center;
     border-radius: 10em;
+    font-size: 0.9rem;
     font-weight: 600;   
 
     transition: background-color 0.4s, box-shadow 0.5s;
@@ -58,6 +59,23 @@ main {
         color: white;
         box-shadow: 0em 0em 5px 2px rgba(14, 108, 156, 0.25)
     }
+}
+
+#cart-counter {
+    display: flex;
+    box-sizing:border-box;
+    align-items: center;
+
+    width: max-content;
+    height: 3em;
+    padding: 0 1em 0 1em;
+    background-color: white;
+    border: none;
+
+    text-align: center;
+    border-radius: 10em;
+    font-weight: 600;   
+    font-size: 0.9rem;
 }
 
 .buy-button {
@@ -148,28 +166,18 @@ main {
 .product-cart-item p {
     align-content: center;
 }
- 
-#notifs {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1em;
-
-    position: absolute;
-    width: 20em;
-    max-height: calc(100vh - 2em);
-    overflow-y: auto;
-    left: 0;
-    padding: 1em;
-}
 
 .notif {
-    width: 90%;
+    position: absolute;
+    top: 1em;
+    left: 1em;
+
+    width: 15em;
     padding: 1em;
     border-radius: 1em;
     font-weight: 600;   
 
-    box-shadow: 0em 0em 15px 5px #79848aa7;
+    border: 0.2em solid #79848a;
 }
 
 .error {

@@ -12,13 +12,14 @@ import ReceiptView from "../view/receipt/receipt-view";
 export default class CartController {
     #cart: Cart;
     #cartBadgeView: CartBadgeView
-    #cartPanelView?: CartPanelView
+    #cartPanelView: CartPanelView
     #receiptView?: ReceiptView
 
     constructor() {
         this.#cart = new Cart();
 
         this.#cartBadgeView = new CartBadgeView(this.#cart, this);
+        this.#cartPanelView = new CartPanelView(this.#cart, this);
     }
 
     /**
@@ -27,21 +28,6 @@ export default class CartController {
      */
     addProduct(product: Product) {
         this.#cart.addProduct(product);
-    }
-
-    /**
-     * Either adds or removes {@link CartPanelView} from the presentation
-     * If cartPanelView is currently presented, then removes that view
-     * Otherwise, it creates a new cartPanelView.
-     */
-    toggleCartPanelVisibility() {
-        if(!this.#cartPanelView) {
-            this.#cartPanelView = new CartPanelView(this.#cart, this);
-        }
-        else {
-            this.#cartPanelView!.close();
-            this.#cartPanelView = undefined;
-        }
     }
 
     /**

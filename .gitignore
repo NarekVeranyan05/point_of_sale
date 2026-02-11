@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vitest
+coverage/
+.vitest-cache/
+
+# Standard logs and reports 
+logs/
+*.log
+test-results.xml # Example for custom report files

@@ -2,7 +2,7 @@ import { assert } from "../assertions";
 import type Product from "./product";
 
 /**
- * The Receipt class represents an the receipt information of
+ * The Receipt class represents the receipt information of
  * all the {@link Product} instances in the purchased {@link Cart}
  */
 export default class Receipt {

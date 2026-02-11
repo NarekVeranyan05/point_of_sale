@@ -19,12 +19,12 @@ export default class CartBadgeView implements Listener {
 
         // adding the cart counter button to the document
         document.querySelector<HTMLDivElement>("#header")!.innerHTML = `
-            <button class='button' id='cart-counter'>Cart: ${this.#cart.products.length}</button>
+            <div id='cart-counter'>Cart: ${this.#cart.products.length}</div>
             <button class='button' id='checkout-button'>Checkout</button>`;
 
         this.#cartEl = document.querySelector<HTMLButtonElement>("#cart-counter")!;
 
-        this.#linkButtons();
+        this.#linkButton();
     }
 
     notify() {
@@ -33,16 +33,10 @@ export default class CartBadgeView implements Listener {
     }
 
     /**
-     * Links all the buttons added to the document
-     * to the appropriate controller methods
+     * Links the button added to the document
+     * to the appropriate controller method
      */
-    #linkButtons() {
-        document.querySelector("#cart-counter")!
-            .addEventListener("click", () => {
-                // should open or close the cart panel
-                this.#controller.toggleCartPanelVisibility();
-            })
-
+    #linkButton() {
         document.querySelector("#checkout-button")!
             .addEventListener("click", () => {
                 this.#controller.checkоut();

@@ -30,7 +30,7 @@ export default class Cart {
     }
 
     /**
-     * Proceeds to checkout with the current cart
+     * Proceeds to checkout with the current Cart
      * @returns the {@link Receipt} for the purchase
      */
     checkout(): Receipt {
@@ -42,7 +42,7 @@ export default class Cart {
     }
 
     /**
-     * Adds a listener to the Cart instance
+     * Adds a listener to the Cart
      * @param listener the listener to register
      */
     registerListener(listener: Listener) {

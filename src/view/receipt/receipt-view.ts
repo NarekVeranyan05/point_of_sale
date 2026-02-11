@@ -7,7 +7,6 @@ import type Receipt from "../../model/receipt";
  * @note ReceiptView is inert and does not listen to any events
  */
 export default class ReceiptView {
-    static #receipts: Array<ReceiptView> = new Array<ReceiptView>();
     #receipt: Receipt
     #receiptDiv: HTMLDivElement
 
@@ -29,46 +28,17 @@ export default class ReceiptView {
             </p>
         `;
 
-        this.#openNotifs();
-        document.querySelector<HTMLDivElement>("#notifs")!.append(this.#receiptDiv);
+        document.querySelector<HTMLDivElement>("#app")!.append(this.#receiptDiv);
         this.#appendProducts();
-
+        
         this.#linkButton();
-
-        ReceiptView.#receipts.push(this);
     }
 
     /**
      * Removes the presentation from the document
      */
     close() {
-        let notifs = document.querySelector<HTMLDivElement>("#notifs")!;
-
-        // removing the receipt
-        notifs.removeChild(this.#receiptDiv);
-        ReceiptView.#receipts.splice(
-            ReceiptView.#receipts.indexOf(this), 1
-        );
-        
-        // if the notifications bar is empty, removes the element from the document
-        if(notifs.childElementCount === 0){
-            document.querySelector<HTMLDivElement>("#app")!.removeChild(
-                document.querySelector("#notifs")!
-            );
-        }
-    }
-
-    /**
-     * Determines if the notifications sidebar is not present in the document
-     * If not, appends the sidebar
-     */
-    #openNotifs() {
-        if(ReceiptView.#receipts.length == 0) {
-            let notifsDiv = document.createElement("div");
-            notifsDiv.id = "notifs";
-
-            document.querySelector<HTMLDivElement>("#app")!.appendChild(notifsDiv);
-        }
+        document.querySelector<HTMLDivElement>("#app")!.removeChild(this.#receiptDiv);
     }
 
     /**
@@ -80,16 +50,16 @@ export default class ReceiptView {
         
         this.#receipt.products.forEach(p => {
             productsUl.innerHTML += `
-                <li class="receipt-item">${p.constructor.name} : $${p.price}</li>
-            `
+                <li class="receipt-item">${p.constructor.name} : $${p.price}</li>`
         })
     }
 
     /**
-     * Links all the buttons added to the document
+     * Links the button added to the document
      * to the appropriate controller methods
      */
     #linkButton() {
-        this.#receiptDiv.querySelector("button")!.addEventListener("click", () => this.close());
+        this.#receiptDiv.querySelector("button")!
+            .addEventListener("click", () => this.close());
     }
 }  
