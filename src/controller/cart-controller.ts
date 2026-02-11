@@ -1,18 +1,59 @@
 import Cart from "../model/cart";
 import Product from "../model/product";
-import CartCounterView from "../view/cart/cart-counter-view";
+import { EmptyCartException } from "../model/receipt";
+import CartBadgeView from "../view/cart/cart-badge-view";
+import CartPanelView from "../view/cart/cart-panel-view";
+import ErrorView from "../view/error-view";
+import ReceiptView from "../view/receipt/receipt-view";
 
+/**
+ * CartController is the controller for the {@link Cart} model class.
+ */
 export default class CartController {
     #cart: Cart;
-    #cartCounterView: CartCounterView
+    #cartBadgeView: CartBadgeView
+    #cartPanelView?: CartPanelView
+    #receiptView?: ReceiptView
 
     constructor() {
         this.#cart = new Cart();
-        this.#cartCounterView = new CartCounterView(this.#cart);
+
+        this.#cartBadgeView = new CartBadgeView(this.#cart, this);
     }
 
+    /**
+     * Adds a {@link Product} to the {@link Cart}
+     * @param product The product to add to the cart
+     */
     addProduct(product: Product) {
-        // FIXME can I have sth like this
         this.#cart.addProduct(product);
+    }
+
+    /**
+     * Either adds or removes {@link CartPanelView} from the presentation
+     * If cartPanelView is currently presented, then removes that view
+     * Otherwise, it creates a new cartPanelView.
+     */
+    toggleCartPanelVisibility() {
+        if(!this.#cartPanelView) {
+            this.#cartPanelView = new CartPanelView(this.#cart, this);
+        }
+        else {
+            this.#cartPanelView!.close();
+            this.#cartPanelView = undefined;
+        }
+    }
+
+    /**
+     * Proceeds to checkout with the current cart and creates a ReceiptView for the receipt
+     */
+    checkоut() {
+        try {
+            let receipt = this.#cart.checkout();
+            this.#receiptView = new ReceiptView(receipt);
+        } catch(e) {
+            if(e instanceof EmptyCartException)
+                new ErrorView("Error: the cart is empty, cannot checkout.");
+        }
     }
 }

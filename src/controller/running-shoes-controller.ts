@@ -1,15 +1,17 @@
 import Product from "../model/product"
-import { ProductType } from "../model/product-type"
+import RunningShoes from "../model/running-shoes"
 import ProductView from "../view/product/product-view"
 import type CartController from "./cart-controller"
 
-export default class ProductController {
+/**
+ * RunningShoesController is the controller for the {@link RunningShoes} model class.
+ */
+export default class RunningShoesController {
     #product: Product
     #productView: ProductView
 
-    // can I have sth like this>
     constructor(cartController: CartController) {
-        this.#product = new Product(ProductType.TRACK_SUIT, 120);
+        this.#product = new RunningShoes(120);
         this.#productView = new ProductView(cartController, this.#product);
     }
 }

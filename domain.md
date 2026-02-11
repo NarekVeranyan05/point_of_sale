@@ -6,10 +6,17 @@ date: January 18, 2026
 
 ## Domain Model
 
+> Changes:
+> * replaced the `ProductType` enumeration with TrackSuit and RunningShoes classes
+> * turned Product into an abstract class
+> * replaced aggregation between Cart-Product and 
+>   Receipt-Product to composition due to implementation
+
 ```mermaid
 classDiagram
     class Product {
-        -ProductType type
+        <<abstract>>
+
         -number price
     }
 
@@ -17,13 +24,13 @@ classDiagram
         price > 0
     "
 
-    Product --* ProductType
+    class Tracksuit { }
 
-    class ProductType {
-        <<enumeration>>
-        TRACK_SUIT
-        RUNNING_SHOES
-    }
+    Tracksuit --|> Product
+
+    class RunningShoes { }
+
+    RunningShoes --|> Product
 
     class Cart {
         -Array~Product~ products
@@ -32,14 +39,14 @@ classDiagram
         +checkout() Receipt
     }
 
-    Cart --o Product
+    Cart --* Product
 
     class Receipt {
         -Array~Product~ products
         -number totalPrice
     }
 
-    Receipt --o Product    
+    Receipt --* Product   
 
     note for Receipt "Class Invariants:
         products.length > 0

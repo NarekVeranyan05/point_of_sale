@@ -1,42 +1,67 @@
 import type CartController from "../../controller/cart-controller";
-import type Listener from "../../listener";
 import type Product from "../../model/product";
-import { ProductType } from "../../model/product-type";
 
-export default class ProductView implements Listener {
-    #product: Product
-    #cartController: CartController
-    #productEl: HTMLDivElement
+/**
+ * The ProductView presents a {@link Product} instance that can be
+ * added to a {@link Cart} and purchased
+ * 
+ * @note ProductView is inert and does not listen to any events
+ */
+export default class ProductView {
+    static #products = new Array<Product>();
+
+    #product: Product;
+    #cartController: CartController;
+    #productEl: HTMLDivElement;
 
     constructor(cartController: CartController, product: Product) {
         this.#cartController = cartController;
         this.#product = product;
-        console.log(product);
 
+        // updating document
         this.#productEl = document.createElement("div");
-        let buyButton = document.createElement("button");
-        buyButton.className = "button buy_button";
-        buyButton.innerHTML = "Add to Cart";
-        buyButton.addEventListener("click", () => {
-            cartController.addProduct(this.#product);
-        })
-
-        this.#productEl.innerHTML = 
-            `<div class="product">
-                <div class="product_info">
-                    <h1 class="product_name">${this.#product.type.replaceAll("_", " ").toLocaleLowerCase()}</h1>
-                    <p class="product_price">$${this.#product.price}</p>
+        this.#productEl.innerHTML = `
+            <div class="product">
+                <div class="product-info">
+                    <h1 class="product-name">${product.constructor.name}</h1>
+                    <p class="product-price">$${product.price}</p>
                 </div>
-                <img src="./public/tracksuits/black.png">
-            </div>`
+                <img src="./public/${product.constructor.name}.png">
+                <button class="button buy-button">Add to Cart</button>
+            </div>`;
         
-        this.#productEl.querySelector<HTMLDivElement>(".product")!.appendChild(buyButton);
+        this.#appendProduct();
+        this.#linkButton();
 
-        document.querySelector<HTMLDivElement>("#products")!
-            .appendChild(this.#productEl);
+        ProductView.#products.push(this.#product);
     }
 
-    notify() {
+    /**
+     * Appends a {@link Product} HTML representation to the document
+     */
+    #appendProduct() {
+        if(ProductView.#products.length > 0) {
+            document.querySelector<HTMLDivElement>("#products")!
+                .appendChild(this.#productEl);
+        }
+        else {
+            // if no previous products added, append a products div to the document
+            let products = document.createElement("div");
+            products.id = "products";
+            
+            products.appendChild(this.#productEl);
+            document.querySelector<HTMLDivElement>("main")!
+                .appendChild(products);
+        }
+    }
 
+    /**
+     * Links all the buttons added to the document
+     * to the appropriate controller methods
+     */
+    #linkButton() {
+        this.#productEl.querySelector("button")!.addEventListener("click", () => {
+            this.#cartController.addProduct(this.#product);
+        });
     }
 }
