@@ -21,10 +21,14 @@ export default class Receipt {
     }
 
     get products(): ReadonlyArray<Product> {
+        this.#checkReceipt();
+        
         return this.#products;
     }
 
     get totalPrice(): number {
+        this.#checkReceipt();
+
         return this.#totalPrice;
     }
 

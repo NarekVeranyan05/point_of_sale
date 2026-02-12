@@ -3,7 +3,7 @@ import {} from "../../public/tracksuit.png"
 
 /**
  * The Product class represents an item that can be added to a {@link Cart} 
- * and purchased.
+ * to purchase later.
  */
 export default abstract class Product {
     #price: number;
@@ -15,6 +15,8 @@ export default abstract class Product {
     }
 
     get price() {
+        this.#checkProduct();
+        
         return this.#price;
     }
 

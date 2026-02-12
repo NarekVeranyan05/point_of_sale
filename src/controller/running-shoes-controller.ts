@@ -7,11 +7,11 @@ import type CartController from "./cart-controller"
  * RunningShoesController is the controller for the {@link RunningShoes} model class.
  */
 export default class RunningShoesController {
-    #product: Product
-    #productView: ProductView
+    #product: Product;
+    #productView: ProductView;
 
     constructor(cartController: CartController) {
-        this.#product = new RunningShoes(120);
+        this.#product = new RunningShoes(120); // hard-coded
         this.#productView = new ProductView(cartController, this.#product);
     }
 }

@@ -6,28 +6,21 @@ import type Cart from "../../model/cart";
  * The CartPanelView presents all the {@link Product} instances added to the {@link Cart}.
  */
 export default class CartPanelView implements Listener {
-    #cart: Cart
-    #controller: CartController
-    #cartPanelDiv: HTMLDivElement
+    #cart: Cart;
+    #controller: CartController;
+    #cartPanelDiv: HTMLDivElement;
 
     constructor(cart: Cart, controller: CartController) {
         this.#cart = cart;
         this.#controller = controller;
         this.#cart.registerListener(this);
 
-        // updating document
+        // creating the panel div
         this.#cartPanelDiv = document.createElement("div");
-        this.#cartPanelDiv.id = "cart-items";
+        this.#cartPanelDiv.id = "cart-panel";
         this.#appendProducts();
 
         document.querySelector("main")!.appendChild(this.#cartPanelDiv);
-    }
-    
-    /**
-     * Removes the presentation from the document
-     */
-    close() {
-        document.querySelector("main")!.removeChild(this.#cartPanelDiv)
     }
 
     notify() {

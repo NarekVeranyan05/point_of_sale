@@ -7,8 +7,8 @@ import type CartController from "./cart-controller"
  * TracksuitController is the controller for the {@link Tracksuit} model class.
  */
 export default class TracksuitController {
-    #product: Product
-    #productView: ProductView
+    #product: Product;
+    #productView: ProductView;
 
     constructor(cartController: CartController) {
         this.#product = new Tracksuit(120);

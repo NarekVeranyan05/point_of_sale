@@ -5,12 +5,12 @@ export default class ErrorView {
     #errorDiv: HTMLDivElement;
 
     constructor(message: string) {
-        // updating document
+        // creating the error div
         this.#errorDiv = document.createElement("div");
         this.#errorDiv.className = "notif error";
         this.#errorDiv.innerHTML = message;
 
-        document.querySelector<HTMLDivElement>("#app")!.append(this.#errorDiv);
+        document.querySelector<HTMLDivElement>("#notifs")!.append(this.#errorDiv);
 
         this.#hide();
     }
@@ -20,7 +20,7 @@ export default class ErrorView {
      */
     #hide() {
         setTimeout(() => {
-            document.querySelector<HTMLDivElement>("#app")!.removeChild(this.#errorDiv);
+            document.querySelector<HTMLDivElement>("#notifs")!.removeChild(this.#errorDiv);
         }, 5000);
     } 
 }

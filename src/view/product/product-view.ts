@@ -12,15 +12,15 @@ export default class ProductView {
 
     #product: Product;
     #cartController: CartController;
-    #productEl: HTMLDivElement;
+    #productDiv: HTMLDivElement;
 
     constructor(cartController: CartController, product: Product) {
         this.#cartController = cartController;
         this.#product = product;
 
-        // updating document
-        this.#productEl = document.createElement("div");
-        this.#productEl.innerHTML = `
+        // creating the product div
+        this.#productDiv = document.createElement("div");
+        this.#productDiv.innerHTML = `
             <div class="product">
                 <div class="product-info">
                     <h1 class="product-name">${product.constructor.name}</h1>
@@ -30,37 +30,18 @@ export default class ProductView {
                 <button class="button buy-button">Add to Cart</button>
             </div>`;
         
-        this.#appendProduct();
+        document.querySelector<HTMLDivElement>("main")!.appendChild(this.#productDiv);
         this.#linkButton();
 
         ProductView.#products.push(this.#product);
     }
 
     /**
-     * Appends a {@link Product} HTML representation to the document
-     */
-    #appendProduct() {
-        if(ProductView.#products.length > 0) {
-            document.querySelector<HTMLDivElement>("#products")!
-                .appendChild(this.#productEl);
-        }
-        else {
-            // if no previous products added, append a products div to the document
-            let products = document.createElement("div");
-            products.id = "products";
-            
-            products.appendChild(this.#productEl);
-            document.querySelector<HTMLDivElement>("main")!
-                .appendChild(products);
-        }
-    }
-
-    /**
-     * Links all the buttons added to the document
+     * Links the button added to the document
      * to the appropriate controller methods
      */
     #linkButton() {
-        this.#productEl.querySelector("button")!.addEventListener("click", () => {
+        this.#productDiv.querySelector("button")!.addEventListener("click", () => {
             this.#cartController.addProduct(this.#product);
         });
     }

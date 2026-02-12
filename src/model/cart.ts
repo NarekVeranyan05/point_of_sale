@@ -7,8 +7,8 @@ import Receipt from "./receipt";
  * were added by the user to purchase.
  */
 export default class Cart {
-    #products: Array<Product>
-    #listeners: Array<Listener>
+    #products: Array<Product>;
+    #listeners: Array<Listener>;
 
     constructor() {
         this.#products = new Array<Product>();
@@ -35,7 +35,7 @@ export default class Cart {
      */
     checkout(): Receipt {
         let receipt = new Receipt(this.#products.map(p => p));
-        this.#products.length = 0;
+        this.#products.length = 0; // emptying the cart
         this.#notifyAll();
 
         return receipt;

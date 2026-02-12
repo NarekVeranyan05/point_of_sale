@@ -11,9 +11,9 @@ import ReceiptView from "../view/receipt/receipt-view";
  */
 export default class CartController {
     #cart: Cart;
-    #cartBadgeView: CartBadgeView
-    #cartPanelView: CartPanelView
-    #receiptView?: ReceiptView
+    #cartBadgeView: CartBadgeView;
+    #cartPanelView: CartPanelView;
+    #receiptView?: ReceiptView;
 
     constructor() {
         this.#cart = new Cart();

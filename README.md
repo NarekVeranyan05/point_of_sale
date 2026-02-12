@@ -1,7 +1,7 @@
 ---
 title: Point of Sale System
 author: Narek Veranyan (veranyan@myumanitoba.ca)
-date: February 10, 2026
+date: February 12, 2026
 ---
 
 ## Overview
@@ -17,6 +17,7 @@ This project is a Node.js project using Vite. You can run it on the command
 line using `npx`:
 
 ```bash
+npm install
 npx vite
 ```
 

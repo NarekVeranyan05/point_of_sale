@@ -7,13 +7,13 @@ import type Receipt from "../../model/receipt";
  * @note ReceiptView is inert and does not listen to any events
  */
 export default class ReceiptView {
-    #receipt: Receipt
-    #receiptDiv: HTMLDivElement
+    #receipt: Receipt;
+    #receiptDiv: HTMLDivElement;
 
     constructor(receipt: Receipt) {
         this.#receipt = receipt;
 
-        // updating document
+        // creating the receipt div
         this.#receiptDiv = document.createElement("div");
         this.#receiptDiv.className = "notif receipt"
         this.#receiptDiv.innerHTML = `
@@ -28,9 +28,9 @@ export default class ReceiptView {
             </p>
         `;
 
-        document.querySelector<HTMLDivElement>("#app")!.append(this.#receiptDiv);
+        document.querySelector<HTMLDivElement>("#notifs")!.append(this.#receiptDiv);
         this.#appendProducts();
-        
+
         this.#linkButton();
     }
 
@@ -38,7 +38,7 @@ export default class ReceiptView {
      * Removes the presentation from the document
      */
     close() {
-        document.querySelector<HTMLDivElement>("#app")!.removeChild(this.#receiptDiv);
+        document.querySelector<HTMLDivElement>("#notifs")!.removeChild(this.#receiptDiv);
     }
 
     /**

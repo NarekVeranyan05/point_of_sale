@@ -5,19 +5,18 @@ import type Cart from "../../model/cart";
 /**
  * The CartBadgeView presents the {@link Cart} checkout button and the 
  * count of the number of items in the Cart to UI.
- * The count is also a button that opens a side-panel
  */
 export default class CartBadgeView implements Listener {
     #cart: Cart;
-    #controller: CartController
-    #cartEl: HTMLButtonElement
+    #controller: CartController;
+    #cartEl: HTMLButtonElement;
 
     constructor(cart: Cart, controller: CartController) {   
         this.#cart = cart;
         this.#controller = controller;
         this.#cart.registerListener(this);
 
-        // adding the cart counter button to the document
+        // adding the cart counter and checkout button to the document
         document.querySelector<HTMLDivElement>("#header")!.innerHTML = `
             <div id='cart-counter'>Cart: ${this.#cart.products.length}</div>
             <button class='button' id='checkout-button'>Checkout</button>`;
