@@ -33,14 +33,15 @@ export default class CartPanelView implements Listener {
      * representation and appends to the the div for cart panel
      */
     #appendProducts() {
-        this.#cart.products.forEach(p => {
+        [...this.#cart.products].forEach(p => {
             let productDiv = document.createElement("div");
 
             // setting up div content
             productDiv.className = "product-cart-item";
             productDiv.innerHTML = `
-                <h3>${p.constructor.name}</h3>
-                <p>$${p.price}</p>`;
+                <h3>${p[0].name} </h3>
+                <p> amount: ${p[1]}</p>
+                <p>$${p[0].price * p[1]}</p>`;
 
             this.#cartPanelDiv.appendChild(productDiv);
         });

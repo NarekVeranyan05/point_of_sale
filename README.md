@@ -1,29 +1,90 @@
 ---
-title: Point of Sale System
+title: Domain Model of the Point of Sale System
 author: Narek Veranyan (veranyan@myumanitoba.ca)
-date: February 12, 2026
+date: January 18, 2026
 ---
 
-## Overview
+## Domain Model
 
-> Point_of_Sale is an implementation of a point of sale software for COMP 2452 specifically designed for selling sportswear. 
-> * There are two types of products: track suit and running shoes
-> * The cashier using the software can view products and add then to the cart for a customer
-> * The customer can proceed to check out and get a receipt summarising the purchased products
+> Changes
+> * replaced the `ProductType` enumeration with TrackSuit and RunningShoes classes
+> * turned Product into an abstract class
 
-## Running
+```mermaid
+classDiagram
+    class Profile {
+        -~string name
+        -~Cart cart
+        -Array~Receipt~ receipts
+    }
 
-This project is a Node.js project using Vite. You can run it on the command
-line using `npx`:
+    Profile "1" o--* "1" Cart
+    Profile "1" o--* "*" Receipt
 
-```bash
-npm install
-npx vite
+    class Product {
+        <<abstract>>
+
+        -~number id
+        -~?Cart cart
+        -~?Receipt receipt
+        -string name
+        -number price
+    }
+
+    note for Product "Class Invariants:
+        price > 0
+    "
+
+    class Tracksuit { }
+
+    Tracksuit --|> Product
+
+    class RunningShoes { }
+
+    RunningShoes --|> Product
+
+    class Cart {
+        -~number id
+        -~Profile profile
+        -Map~Product, number~ products
+        -Array~Coupon~ coupons
+
+        +addProduct(Product p, number amt)
+        +checkout() Receipt
+    }
+
+    Cart "1" o--* "*" Product
+
+    class Receipt {
+        -~number id
+        -~Profile profile
+        -Map~Product, number~ products
+        -number discount
+        -number totalPrice
+    }
+
+    Receipt "1" o--* "+" Product    
+
+    note for Receipt "Class Invariants:
+        products.length > 0
+        totalPrice > 0
+    "
+
+    class Coupon {
+        <<interface>>
+
+        +applyCoupon(Cart c) 
+    }
+
+    class Discount { }
+    Discount --|> Coupon
+
+    class Bogo { }
+
+    Bogo --|> Coupon
 ```
 
-And proceed opening your web browser and go to the address printed out by Vite.
 
-## Domain model and flows of interaction diagrams
 
-* The domain model class diagram can be found in `domain.md`.
-* The flows of interation diagrams can be found in `flows.md`.
+
+

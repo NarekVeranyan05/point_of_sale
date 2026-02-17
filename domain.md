@@ -14,9 +14,22 @@ date: January 18, 2026
 
 ```mermaid
 classDiagram
+    class Profile {
+        -~string name
+        -~Cart cart
+        -Array~Receipt~ receipts
+    }
+
+    Profile "1" o--* "1" Cart
+    Profile "1" o--* "*" Receipt
+
     class Product {
         <<abstract>>
 
+        -~number id
+        -~?Cart cart
+        -~?Receipt receipt
+        -string name
         -number price
     }
 
@@ -33,25 +46,45 @@ classDiagram
     RunningShoes --|> Product
 
     class Cart {
-        -Array~Product~ products
+        -~number id
+        -~Profile profile
+        -Map~Product, number~ products
+        -Array~Coupon~ coupons
 
-        +addProduct(Product p)
+        +addProduct(Product p, number amt)
+        +addCoupon(Coupon c)
         +checkout() Receipt
     }
 
-    Cart --* Product
+    Cart "1" o--* "*" Product
 
     class Receipt {
-        -Array~Product~ products
+        -~number id
+        -~Profile profile
+        -Map~Product, number~ products
+        -number discount
         -number totalPrice
     }
 
-    Receipt --* Product   
+    Receipt "1" o--* "+" Product    
 
     note for Receipt "Class Invariants:
         products.length > 0
         totalPrice > 0
     "
+
+    class Coupon {
+        <<interface>>
+
+        +applyCoupon(Cart c) 
+    }
+
+    class Discount { }
+    Discount --|> Coupon
+
+    class Bogo { }
+
+    Bogo --|> Coupon
 ```
 
 

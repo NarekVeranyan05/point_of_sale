@@ -14,6 +14,8 @@ export default class ReceiptView {
         this.#receipt = receipt;
 
         // creating the receipt div
+        const amt = [...this.#receipt.products].reduce((acc, pair) => acc += pair[1], 0);
+
         this.#receiptDiv = document.createElement("div");
         this.#receiptDiv.className = "notif receipt"
         this.#receiptDiv.innerHTML = `
@@ -23,8 +25,10 @@ export default class ReceiptView {
             </div>
             <ul></ul>
             <p class="receipt-summary">
-                Number of items: ${this.#receipt.products.length}<br>
-                Total price: $${this.#receipt.totalPrice}
+                Number of items: ${amt}<br>
+                List price: $${this.#receipt.listPrice}<br>
+                Discount: $${this.#receipt.discount}<br>
+                Total price: $${this.#receipt.listPrice - this.#receipt.discount}
             </p>
         `;
 
@@ -48,9 +52,9 @@ export default class ReceiptView {
     #appendProducts() {
         let productsUl = this.#receiptDiv.querySelector("ul")!;
         
-        this.#receipt.products.forEach(p => {
+        [...this.#receipt.products].forEach(p => {
             productsUl.innerHTML += `
-                <li class="receipt-item">${p.constructor.name} : $${p.price}</li>`
+                <li class="receipt-item">${p[0].name} | amount: ${p[1]} | $${p[0].price * p[1]}</li>`
         })
     }
 

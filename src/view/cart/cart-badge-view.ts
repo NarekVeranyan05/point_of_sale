@@ -18,7 +18,7 @@ export default class CartBadgeView implements Listener {
 
         // adding the cart counter and checkout button to the document
         document.querySelector<HTMLDivElement>("#header")!.innerHTML = `
-            <div id='cart-counter'>Cart: ${this.#cart.products.length}</div>
+            <div id='cart-counter'>Cart: ${this.#cart.products.size}</div>
             <button class='button' id='checkout-button'>Checkout</button>`;
 
         this.#cartEl = document.querySelector<HTMLButtonElement>("#cart-counter")!;
@@ -28,7 +28,8 @@ export default class CartBadgeView implements Listener {
 
     notify() {
         // updates the count for the number of items in the cart
-        this.#cartEl.textContent = `Cart: ${this.#cart.products.length}`;
+        const amt = [...this.#cart.products].reduce((acc, pair) => acc += pair[1], 0);
+        this.#cartEl.textContent = `Cart: ${amt}`;
     }
 
     /**

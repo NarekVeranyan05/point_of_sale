@@ -13,5 +13,8 @@
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@electric-sql/pglite-repl": "^0.2.33"
   }
 }

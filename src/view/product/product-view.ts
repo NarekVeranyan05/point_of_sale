@@ -1,5 +1,5 @@
 import type CartController from "../../controller/cart-controller";
-import type Product from "../../model/product";
+import type Product from "../../model/product/product";
 
 /**
  * The ProductView presents a {@link Product} instance that can be
@@ -8,8 +8,6 @@ import type Product from "../../model/product";
  * @note ProductView is inert and does not listen to any events
  */
 export default class ProductView {
-    static #products = new Array<Product>();
-
     #product: Product;
     #cartController: CartController;
     #productDiv: HTMLDivElement;
@@ -23,17 +21,15 @@ export default class ProductView {
         this.#productDiv.innerHTML = `
             <div class="product">
                 <div class="product-info">
-                    <h1 class="product-name">${product.constructor.name}</h1>
+                    <h1 class="product-name">${product.name}</h1>
                     <p class="product-price">$${product.price}</p>
                 </div>
-                <img src="./public/${product.constructor.name}.png">
+                <img src="./public/${product.name}.png">
                 <button class="button buy-button">Add to Cart</button>
             </div>`;
         
         document.querySelector<HTMLDivElement>("main")!.appendChild(this.#productDiv);
         this.#linkButton();
-
-        ProductView.#products.push(this.#product);
     }
 
     /**
@@ -42,7 +38,7 @@ export default class ProductView {
      */
     #linkButton() {
         this.#productDiv.querySelector("button")!.addEventListener("click", () => {
-            this.#cartController.addProduct(this.#product);
+            this.#cartController.showProductAmountDialogView(this.#product);
         });
     }
 }
