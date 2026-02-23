@@ -61,3 +61,7 @@ ON CONFLICT (name) DO NOTHING;
 INSERT INTO productMaster (name, type, price)
 VALUES ('Greta''s Runners', 'RunningShoes', 120)
 ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO account (name)
+VALUES ('Mister Dude')
+ON CONFLICT (name) DO NOTHING;

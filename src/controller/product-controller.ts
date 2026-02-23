@@ -4,10 +4,10 @@ import type CartController from "./cart-controller";
 
 export default class ProductController {
     #product: Product;
-    #productView: ProductView;
+    #productView?: ProductView;
 
     constructor(product: Product, cartController: CartController) {
         this.#product = product;
-        this.#productView = new ProductView(cartController, this.#product);
+        // this.#productView = new ProductView(cartController, this.#product);
     }
 }
