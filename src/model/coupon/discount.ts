@@ -1,21 +1,24 @@
 import { assert } from "../../assertions";
 import type Receipt from "../receipt";
-import type Coupon from "./coupon";
+import Coupon from "./coupon";
 
-export default class Discount implements Coupon {
+export default class Discount extends Coupon {
     #amountOff: number;
 
-    constructor(amountOff: number) {
+    constructor(name: string, description: string, amountOff: number) {
+        super(name, description);
         this.#amountOff = amountOff;
 
         this.#checkDiscount();
     }
 
     applyCoupon(receipt: Receipt): void {
+        this.checkCoupon();
         this.#checkDiscount();
 
         receipt.addDiscount(this.#amountOff);
 
+        this.checkCoupon();
         this.#checkDiscount();
     }
 

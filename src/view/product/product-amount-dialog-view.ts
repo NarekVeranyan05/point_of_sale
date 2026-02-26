@@ -1,5 +1,6 @@
 import type CartController from "../../controller/cart-controller";
 import type Product from "../../model/product/product";
+import type Account from "../../model/account.ts";
 
 export default class ProductAmountDialogView {
     #product: Product;
@@ -30,7 +31,9 @@ export default class ProductAmountDialogView {
     #linkButton() {
         this.#dialog.querySelector("button")!.addEventListener("click", () => {
             const amt = this.#dialog.querySelector("input")!.valueAsNumber;
-            this.#controller.addProduct(this.#product, amt);
+            let pCpy = this.#product.clone();
+            pCpy.quantity = amt;
+            this.#controller.addProduct(pCpy);
         });
     }
 }

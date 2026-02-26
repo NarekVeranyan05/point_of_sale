@@ -1,28 +1,21 @@
 import { assert } from "../../assertions";
 import type Product from "../product/product";
 import type Receipt from "../receipt";
-import type Coupon from "./coupon";
+import Coupon from "./coupon";
 
-export default class Bogo implements Coupon {
+export default class Bogo extends Coupon {
     #reward: Product;
-    #amount: number;
+    #toBuy: Product;
 
-    constructor(reward: Product, amount: number) {
+    constructor(name: string, description: string, reward: Product, toBuy: Product) {
+        super(name, description);
         this.#reward = reward;
-        this.#amount = amount;
-
-        this.#checkBogo();
+        this.#toBuy = toBuy;
     }
 
     applyCoupon(receipt: Receipt): void {
-        this.#checkBogo();
-
-        receipt.addProduct(this.#reward, this.#amount);
-
-        this.#checkBogo();
-    }
-
-    #checkBogo() {
-        assert(this.#amount > 0, "amount must be positive.");
+        receipt.addProduct(this.#toBuy);
+        receipt.addProduct(this.#reward);
+        receipt.addDiscount(this.#reward.price);
     }
 }

@@ -5,7 +5,13 @@ import Product from "./product";
  * in the point-of-sale system
  */
 export class RunningShoes extends Product {
-    constructor(name: string, price: number) {
-        super(name, price);
+    static readonly measurementUnit: string = "discrete";
+
+    constructor(name: string, description: string, price: number, quantity: number) {
+        super(name, description, price, quantity);
+    }
+
+    clone(): Product {
+        return new RunningShoes(this.name, this.description, this.price, this.quantity);
     }
 }

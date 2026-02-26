@@ -1,5 +1,7 @@
 import type CartController from "../../controller/cart-controller";
 import type Product from "../../model/product/product";
+import type AccountController from "../../controller/account-controller.ts";
+import type Account from "../../model/account.ts";
 
 /**
  * The ProductView presents a {@link Product} instance that can be

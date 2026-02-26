@@ -19,15 +19,17 @@ flowchart LR
     login_to_account{login to account}
     transaction_view[[transaction_view]]
 
-    login_view == name ==> login_option_selection
+    login_view == name \n password ==> login_option_selection
 
     login_option_selection == sign up ==> create_account
     login_option_selection == log in ==> login_to_account
 
-    create_account -. account name already exists .-> login_option_selection
+    create_account -. account already exists .-> login_option_selection
     create_account -. account .-> login_to_account
 
     login_to_account -. logged in .-> transaction_view
+
+    login_to_account -. incorrect account \n name or password .-> login_option_selection
 end
 ```
 
@@ -41,7 +43,7 @@ subgraph view products
     verify_cart{verify cart}
     checkout_screen[[checkout screen]]
 
-    transaction_view == product ==> add_to_cart
+    transaction_view == product, quantity ==> add_to_cart
     transaction_view == checkout ==> verify_cart
 
     add_to_cart -. product added .-> transaction_view
@@ -54,16 +56,19 @@ end
 
 ### Check out
 
+The checkout flow has been modified to now accept input of the coupon, 
+apply the coupon to the cart before producing a receipt.
+
 ```mermaid
-flowchart TD
+flowchart TB
 subgraph checkout
     checkout_screen[[checkout screen]]
-    do_purchase{do purchase}
+    apply_coupon{apply coupon}
     transaction_screen[[transaction screen]]
 
-    checkout_screen == cart ==> do_purchase
-
-    do_purchase -. receipt .-> transaction_screen
+    checkout_screen == coupon ==> apply_coupon
+    
+    apply_coupon -. receipt .-> transaction_screen
 end
 ```
 

@@ -1,27 +1,36 @@
-import { assert, AssertionError } from "../assertions";
+import { assert } from "../assertions";
 import type Listener from "../listener";
-import type Coupon from "./coupon/coupon";
-import type Product from "./product/product";
+import Coupon from "./coupon/coupon";
+import Product from "./product/product";
 import Receipt from "./receipt";
+import db from "./connection.ts";
 
 /**
  * The Cart class contains all the {@link Product} instances that
  * were added by the user to purchase.
  */
 export default class Cart {
-    #products: Map<Product, number>;
+    #products: Array<Product>;
     #coupons: Array<Coupon> 
     #listeners: Array<Listener>;
 
+    static async fetchCart(accountName: string): Promise<Cart> {
+        let cart = new Cart();
+        Product.fetchProducts(accountName).then(rows => cart.#products = rows);
+        Coupon.fetchCoupons(accountName).then(rows => cart.#coupons = rows);
+
+        return cart;
+    }
+
     constructor() {
-        this.#products = new Map<Product, number>();
+        this.#products = new Array<Product>();
         this.#coupons = new Array<Coupon>();
         this.#listeners = [];
 
         this.#checkCart();
     }
 
-    get products(): ReadonlyMap<Product, number> {
+    get products(): ReadonlyArray<Product> {
         this.#checkCart();
 
         return this.#products;
@@ -30,19 +39,11 @@ export default class Cart {
     /**
      * Adds a {@link Product} to the cart
      * @param product the product to add to the cart
-     * @param amt the quantity of how much to add
      */
-    addProduct(product: Product, amt: number) {
-        if(amt <= 0)
-            throw new NonPositiveAmountError();
-
+    addProduct(product: Product){
         this.#checkCart();
 
-        if(this.#products.has(product))
-            this.#products.set(product, this.#products.get(product)! + amt);
-        else
-            this.#products.set(product, amt);
-
+        this.#products.push(product);
         this.#notifyAll();
 
         this.#checkCart();
@@ -67,10 +68,9 @@ export default class Cart {
     checkout(): Receipt {
         this.#checkCart();
 
-        console.log(new Map(this.#products));
-        let receipt = new Receipt(new Map(this.#products));
+        let receipt = new Receipt(this.#products.map(p => p));
         this.#coupons.forEach(c => c.applyCoupon(receipt));
-        this.#products.clear();
+        this.#products.length = 0;
 
         this.#notifyAll();
 
@@ -106,12 +106,6 @@ export default class Cart {
      * Class invariants for Product
      */
     #checkCart() {
-        assert(this.#coupons.length == 0 || (this.#products.size > 0), "empty cart cannot have coupons.");
-
-        [...this.#products].forEach(pair => {
-            assert(pair[1] > 0, "product amount must be positive.");
-        });
+        assert(this.#coupons.length == 0 || (this.#products.length > 0), "empty cart cannot have coupons.");
     }
 }
-
-export class NonPositiveAmountError extends Error { }

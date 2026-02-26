@@ -74,7 +74,10 @@ main {
         box-shadow 0.2s;
 }
 
-.button:hover {
+.button:hover,
+.buy-button:hover,
+#signup-button:hover,
+#login-button:hover {
     cursor: pointer;
     background-color: #0E6C9C;
     color: white;
@@ -150,7 +153,7 @@ main {
 
 .product img {
     display: block;
-    width: max-content / 2;
+    width: max-content;
     height: 14em;
 }
 
@@ -236,16 +239,11 @@ main {
 
     text-align: center;
     border-radius: 10em;
-    font-weight: 600;   
-
+    font-weight: 600;
 
     &:hover{
         cursor: pointer;
     }
-}
-
-dialog.product-amount-dialog {
-
 }
 
 .product-amount-dialog {
@@ -283,37 +281,125 @@ dialog.product-amount-dialog {
 }
 
 
+/* --- Login / signup block --- */
 
-@media (max-width: 1000px) {
-main {
-    width: 100%;
-    height: 100vh;
-
-    display: grid;
-
-    /* left grid columns + one fixed right column */
-    grid-template-columns: minmax(0, 2fr) minmax(220px, 260px);
-    grid-template-rows: auto 1fr;
-
-    gap: 1rem;
-}
-
-main > :not(#cart-panel) {
-    grid-column: 1;
-}
-
-#cart-panel {
-    grid-column: 2;
-    grid-row: 1 / -1;
+#login-dialog {
+    inset: 0;
+    margin: auto;
 
     display: flex;
     flex-direction: column;
-    gap: 1em;
-    padding: 1em;
+    width: 50vw;
+    height: 30vh;
+    align-items: center;
+    justify-content: center;
+}
+
+#login-inputs,
+#login-signup {
+    display: flex;
+    width: 25em;
+    gap: 0.75em;
+}
+
+/* card wrapper effect for both rows */
+#login-inputs {
+    flex-direction: column;
+
+    padding: 1.25em;
 
     background-color: #F4F7FA;
-    border-top: 0.2em solid #0E6C9C;
-    border-left: 0.2em solid #0E6C9C;
-    border-bottom: 0.2em solid #0E6C9C;
+    border: 0.2em solid #0E6C9C;
+    border-radius: 1.25em;
+
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
 }
+
+/* inputs styled to match your dialogs/buttons */
+#login-inputs input {
+    width: 100%;
+    height: 3em;
+    padding: 0 1em;
+
+    background: white;
+    color: #1f2a33;
+
+    border: 0.11em solid #0E6C9C;
+    border-radius: 10em;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    outline: none;
+    box-sizing: border-box;
+}
+
+#login-inputs input::placeholder {
+    color: #79848a;
+    font-weight: 500;
+}
+
+/* button row */
+#login-signup {
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 0.75em;
+}
+
+#login-signup p {
+    margin: 0 0.5em;
+    font-weight: 600;
+    color: #79848a;
+}
+
+/* make signup visually secondary, consistent with buy-button */
+#login-button,
+#signup-button {
+    background-color: #F4F7FA;
+    border: 0.11em solid #0E6C9C
+}
+
+
+@media (max-width: 1000px) {
+    main {
+        width: 100%;
+        height: 100vh;
+
+        display: grid;
+
+        /* left grid columns + one fixed right column */
+        grid-template-columns: minmax(0, 2fr) minmax(220px, 260px);
+        grid-template-rows: auto 1fr;
+
+        gap: 1rem;
+    }
+
+    main > :not(#cart-panel) {
+        grid-column: 1;
+    }
+
+    #cart-panel {
+        grid-column: 2;
+        grid-row: 1 / -1;
+
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        padding: 1em;
+
+        background-color: #F4F7FA;
+        border-top: 0.2em solid #0E6C9C;
+        border-left: 0.2em solid #0E6C9C;
+        border-bottom: 0.2em solid #0E6C9C;
+    }
+
+    #login-signup {
+        flex-direction: column;
+        gap: 0.5em;
+    }
+
+    #login-signup p {
+        display: none;
+    }
 }

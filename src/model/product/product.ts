@@ -1,10 +1,13 @@
 import { assert } from "../../assertions";
 import db from "../connection";
+import ProductView from "../../view/product/product-view.ts";
+import type Account from "../account.ts";
 
 type ProductType = {
-    name: string, 
+    name: string,
+    description: string,
     type: string,
-    price: string
+    price: number
 }
 
 /**
@@ -12,27 +15,35 @@ type ProductType = {
  * to purchase later.
  */
 export default abstract class Product {
-    #name: string
+    #account?: Account;
+    #name: string;
+    #description: string;
     #price: number;
+    #quantity: number;
 
-    constructor(name: string, price: number) {
-        this.#name = name;
-        this.#price = price;
-
-        this.#checkProduct();
-    }
-
-    static async getAllProducts(): Promise<Array<Product>> {
-        const result = await db().query<ProductType>("SELECT * FROM productMaster");
+    static async fetchProductMaster(): Promise<Product[]> {
+        const productResults = await db().query<ProductType>("SELECT * FROM productmaster");
 
         const { RunningShoes } = await import("./running-shoes.ts");
         const { Tracksuit } = await import("./tracksuit.ts");
 
-        const products: Array<Product> = result.rows.map(row => {
-            return eval(`new ${row.type}(row.name, row.price)`);
-        });
+        return productResults.rows.map<Product>(pType => eval(`new ${pType.type}("${pType.name}", "${pType.description}", ${pType.price}, 1)`));
+    }
 
-        return products;
+    static async fetchProducts(accountName: string): Promise<Product[]> {
+        const productResults = await db().query<Product>(`SELECT * FROM product WHERE account = '${accountName}'`);
+
+        return productResults.rows;
+    }
+
+    constructor(name: string, description: string, price: number, quantity: number, account?: Account) {
+        this.#name = name
+        this.#description = description;
+        this.#price = price;
+        this.#quantity = quantity;
+        this.#account = account;
+
+        this.#checkProduct();
     }
 
     get name() {
@@ -41,11 +52,31 @@ export default abstract class Product {
         return this.#name;
     }
 
+    get description() {
+        this.#checkProduct();
+
+        return this.#description;
+    }
+
     get price() {
         this.#checkProduct();
         
         return this.#price;
     }
+
+    get quantity() {
+        this.#checkProduct();
+
+        return this.#quantity;
+    }
+
+    set quantity(quantity: number) {
+        this.#checkProduct();
+
+        this.#quantity = quantity;
+    }
+
+    abstract clone(): Product;
 
     /**
      * Class invariants for Product
@@ -53,5 +84,6 @@ export default abstract class Product {
     #checkProduct() {
         assert(this.#name.length > 0, "name cannot be empty.")
         assert(this.#price > 0, "price must be positive.");
+        assert(this.#quantity > 0, "quantity must be positive.");
     }
 }

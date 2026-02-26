@@ -12,79 +12,120 @@ date: January 18, 2026
 > * replaced aggregation between Cart-Product and 
 >   Receipt-Product to composition due to implementation
 
+* Note: the Account password is stored only in the database
+
 ```mermaid
 classDiagram
-    class Profile {
-        -~string name
-        -~Cart cart
-        -Array~Receipt~ receipts
-    }
+class Account {
+    -~string name
+    -string password
+    -Cart cart
+    -Array~Receipt~ receipts
+}
 
-    Profile "1" o--* "1" Cart
-    Profile "1" o--* "*" Receipt
+Account --* "1" Cart
+Account "1" o--* "*" Receipt
 
-    class Product {
-        <<abstract>>
+note for Account"Class Invariants:
+    name.length > 0
+    password.length > 0
+"
 
-        -~number id
-        -~?Cart cart
-        -~?Receipt receipt
-        -string name
-        -number price
-    }
+class Cart {
+    -Array~Product~ products
+    -Array~Coupon~ coupons
+    
+    +addProduct(Product p)
+    +addCoupon(Coupon c)
+    +checkout() Receipt
+}
 
-    note for Product "Class Invariants:
-        price > 0
-    "
+Cart "1" o--* "*" Product
+Cart "1" o--* "*" Coupon
 
-    class Tracksuit { }
+note for Cart "Class Invariants:
+    if coupons.length > 0,<br> then products.length > 0
+"
 
-    Tracksuit --|> Product
+class Product {
+    <<abstract>>
+    
+    -~number id
+    -?Cart cart
+    -?Receipt receipt
+    -string name
+    -string description
+    -number price
+    -number quantity
+}
 
-    class RunningShoes { }
+note for Product "Class Invariants:
+    name.length > 0
+    description.length > 0
+    price > 0
+    quantity > 0
+"
 
-    RunningShoes --|> Product
+class Tracksuit { }
 
-    class Cart {
-        -~number id
-        -~Profile profile
-        -Map~Product, number~ products
-        -Array~Coupon~ coupons
+Tracksuit --|> Product
 
-        +addProduct(Product p, number amt)
-        +addCoupon(Coupon c)
-        +checkout() Receipt
-    }
+class RunningShoes { }
 
-    Cart "1" o--* "*" Product
+RunningShoes --|> Product
 
-    class Receipt {
-        -~number id
-        -~Profile profile
-        -Map~Product, number~ products
-        -number discount
-        -number totalPrice
-    }
+class SunflowerSeed { }
 
-    Receipt "1" o--* "+" Product    
+SunflowerSeed --|> Product
 
-    note for Receipt "Class Invariants:
-        products.length > 0
-        totalPrice > 0
-    "
+class Receipt {
+    -PlainDateTime timestamp
+    -~number id
+    -Account account
+    -Array~Product~ products
+    -number discount
+    -number totalPrice
+}
 
-    class Coupon {
-        <<interface>>
+Receipt "1" o--* "+" Product
 
-        +applyCoupon(Cart c) 
-    }
+note for Receipt "Class Invariants:
+    products.length > 0
+    totalPrice > 0
+"
 
-    class Discount { }
-    Discount --|> Coupon
+class Coupon {
+    <<abstract>>
+    
+    Cart cart
+    string name
+    string description
+    
+    applyCoupon(Receipt r)
+}
 
-    class Bogo { }
+note for Coupon"Class Invariants:
+    name.length > 0
+    description.length > 0
+"
 
-    Bogo --|> Coupon
+class Discount {
+    number amountOff
+}
+
+note for Discount"Class Invariants:
+    amountOff > 0
+"
+
+Discount --|> Coupon
+
+class Bogo {
+    Product reward
+    Product toBuy
+}
+
+Bogo --|> Coupon
+Bogo --o "1" Product
 ```
 
 

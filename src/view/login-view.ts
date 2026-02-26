@@ -1,22 +1,21 @@
 import type AccountController from "../controller/account-controller";
-import type CartController from "../controller/cart-controller";
-import type ProductController from "../controller/product-controller";
+import type CartController from "../controller/cart-controller.ts";
+import ErrorView from "./error-view.ts";
 
 export default class LoginView {
     #accountController: AccountController;
-    #cartController: CartController;
-    #productControllers: Array<ProductController>;
     #loginDialog: HTMLDialogElement;
 
-    constructor(accountController: AccountController, cartController: CartController, productControllers: Array<ProductController>) {
+    constructor(accountController: AccountController) {
         this.#accountController = accountController;
-        this.#cartController = cartController;
-        this.#productControllers = productControllers;
 
         this.#loginDialog = document.createElement("dialog");
         this.#loginDialog.id = "login-dialog";
         this.#loginDialog.innerHTML = `
-            <input type="text" id="login-name" placeholder="Account name"></input>    
+            <div id="login-inputs">
+                <input type="text" id="login-name" placeholder="Account name"/>
+                <input type="text" id="login-password" placeholder="Password"/>
+            </div>
             <div id="login-signup">
                 <button class="button" id="login-button">Log in</button>
                 <p>or</p>
@@ -31,16 +30,28 @@ export default class LoginView {
     }
 
     #linkButtons() {
-        this.#loginDialog.querySelector("#login-button")!.addEventListener("click", () => {
-            const amt = this.#loginDialog.querySelector("input")!.value;
+        this.#loginDialog.querySelector("#login-button")!.addEventListener("click", async () => {
+            const accountName = this.#loginDialog.querySelector<HTMLInputElement>("#login-name")!.value;
+            const password = this.#loginDialog.querySelector<HTMLInputElement>("#login-password")!.value;
             try{
-                this.#accountController.login(amt);
-                this.#cartController.showCartBadgeView();
-                this.#cartController.showCartPanelView();
-                this.#productControllers.forEach(c => c.showProductView());
+                await this.#accountController.login(accountName, password);
             } catch(e) {
-                // fixme
+                new ErrorView(`Error: Account with name ${accountName} does not exist. Create such an account.`);
             }
-        })
+        });
+
+        this.#loginDialog.querySelector("#signup-button")!.addEventListener("click", async () => {
+            const accountName = this.#loginDialog.querySelector<HTMLInputElement>("#login-name")!.value;
+            const password = this.#loginDialog.querySelector<HTMLInputElement>("#login-password")!.value;
+            try{
+                await this.#accountController.signup(accountName, password);
+            } catch(e) {
+                new ErrorView(`Error: Account with name ${accountName} does not exist. Create such an account.`);
+            }
+        });
+    }
+
+    close() {
+        document.querySelector("main")!.removeChild(this.#loginDialog);
     }
 }
