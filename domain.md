@@ -1,18 +1,21 @@
 ---
 title: Domain Model of the Point of Sale System
 author: Narek Veranyan (veranyan@myumanitoba.ca)
-date: January 18, 2026
+date: February 27, 2026
 ---
 
 ## Domain Model
 
-> Changes:
-> * replaced the `ProductType` enumeration with TrackSuit and RunningShoes classes
-> * turned Product into an abstract class
-> * replaced aggregation between Cart-Product and 
->   Receipt-Product to composition due to implementation
+#### Changes
+1. Account 
+   - renamed `checkout()` method to `purchase()`
+   - note that password is stored only in the database. However, Account checks for it to be of non-zero length
 
-* Note: the Account password is stored only in the database
+2. Receipt
+   - added coupons to Receipt
+
+3. Discount
+   - renamed `amountOff` property to `percentageOff`. Added a new invariant appropriately
 
 ```mermaid
 classDiagram
@@ -23,7 +26,7 @@ class Account {
     -Array~Receipt~ receipts
 }
 
-Account --* "1" Cart
+Account "1" o--* "1" Cart
 Account "1" o--* "*" Receipt
 
 note for Account"Class Invariants:
@@ -32,12 +35,14 @@ note for Account"Class Invariants:
 "
 
 class Cart {
+    -~Account account
+    -~number id
     -Array~Product~ products
     -Array~Coupon~ coupons
     
     +addProduct(Product p)
     +addCoupon(Coupon c)
-    +checkout() Receipt
+    +purchase() Receipt
 }
 
 Cart "1" o--* "*" Product
@@ -83,21 +88,30 @@ class Receipt {
     -~number id
     -Account account
     -Array~Product~ products
+    -Array~Coupon~ coupons
     -number discount
-    -number totalPrice
+    -number listPrice
+    
+    +addProduct(Product p)
+    +addCoupon(Coupon c)
+    +addDiscount(number amt)
 }
 
 Receipt "1" o--* "+" Product
+Receipt "1" o--* "*" Coupon
 
 note for Receipt "Class Invariants:
     products.length > 0
-    totalPrice > 0
+    discount >= 0
+    listPrice - discount > 0
 "
 
 class Coupon {
     <<abstract>>
     
-    Cart cart
+    ~number id
+    ?Cart cart
+    ?Receipt cart
     string name
     string description
     
@@ -110,11 +124,12 @@ note for Coupon"Class Invariants:
 "
 
 class Discount {
-    number amountOff
+    number percentageOff
 }
 
 note for Discount"Class Invariants:
-    amountOff > 0
+    percentageOff > 0
+    percentageOff < 100
 "
 
 Discount --|> Coupon

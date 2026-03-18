@@ -1,69 +1,108 @@
 CREATE TABLE IF NOT EXISTS account(
     name VARCHAR(255) PRIMARY KEY,
-    password VARCHAR(255) UNIQUE NOT NULL
+    password VARCHAR(255) NOT NULL,
+    salt VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS receipt(
-    id SERIAL PRIMARY KEY,
-    account VARCHAR(255),
+CREATE TABLE IF NOT EXISTS cart(
+   id SERIAL PRIMARY KEY,
+   account VARCHAR(255) UNIQUE NOT NULL,
         FOREIGN KEY (account) REFERENCES account(name)
         ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS productMaster(
+CREATE TABLE IF NOT EXISTS receipt(
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL,
+    discount INTEGER NOT NULL,
+    list_price INTEGER NOT NULL,
+    account VARCHAR(255) NOT NULL,
+        FOREIGN KEY (account) REFERENCES account(name)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS product_master(
     name VARCHAR(255) PRIMARY KEY,
     description VARCHAR(255) NOT NULL,
     type VARCHAR(255) NOT NULL,
+    measurement_unit VARCHAR(255) NOT NULL,
     price INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS product(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-        FOREIGN KEY (name) REFERENCES productMaster(name),
+    id SERIAL PRIMARY KEY, -- I referred to name = unique for all possible products; but there may exist multiple instances of the same product
+    name VARCHAR(255),
+    description VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    price INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
-    account VARCHAR(255),
-        FOREIGN KEY (account) REFERENCES account(name) -- the account whose cart the product is in (if not purchased)
+    cart INTEGER,
+        FOREIGN KEY (cart) REFERENCES cart(id)
         ON DELETE CASCADE,
     receipt INTEGER,
         FOREIGN KEY (receipt) REFERENCES receipt(id)  -- the receipt where the product is in (if purchased)
         ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS couponMaster(
-    id SERIAL PRIMARY KEY,
-    type VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS coupon_master(
+    name VARCHAR(255) PRIMARY KEY,
     description VARCHAR(255) NOT NULL,
-    amountOff INTEGER,
+    type VARCHAR(255) NOT NULL,
+    percentage_off INTEGER,
     reward VARCHAR(255),
-        FOREIGN KEY (reward) REFERENCES productMaster(name)
+        FOREIGN KEY (reward) REFERENCES product_master(name)
         ON DELETE CASCADE,
-    toBuy VARCHAR(255),
-        FOREIGN KEY (toBuy) REFERENCES productMaster(name)
-        ON DELETE CASCADE
+    reward_quantity INTEGER,
+    to_buy VARCHAR(255),
+        FOREIGN KEY (to_buy) REFERENCES product_master(name)
+        ON DELETE CASCADE,
+    buy_quantity INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS coupon(
     id SERIAL PRIMARY KEY,
-    master_id INTEGER NOT NULL,
-        FOREIGN KEY (master_id) REFERENCES couponMaster(id),
-    account VARCHAR(255) NOT NULL,
-        FOREIGN KEY (account) REFERENCES account(name)
+    type VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+        FOREIGN KEY (name) REFERENCES coupon_master(name)
+        ON DELETE CASCADE,
+    description VARCHAR(255) NOT NULL,
+    percentage_off INTEGER,
+    reward VARCHAR(255),
+        FOREIGN KEY (reward) REFERENCES product_master(name)
+        ON DELETE CASCADE,
+    reward_quantity INTEGER,
+    to_buy VARCHAR(255),
+        FOREIGN KEY (to_buy) REFERENCES product_master(name)
+        ON DELETE CASCADE,
+    buy_quantity INTEGER,
+    cart INTEGER,
+        FOREIGN KEY (cart) REFERENCES cart(id)
+        ON DELETE CASCADE,
+    receipt INTEGER,
+        FOREIGN KEY (receipt) REFERENCES receipt(id)
+        ON DELETE CASCADE
 );
 
-INSERT INTO productMaster (name, description, type, price)
-VALUES ('Gary''s Tracks', 'some', 'Tracksuit', 250)
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('Gary''s Tracks', 'some', 'Tracksuit', 'discrete units', 250)
 ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO productMaster (name, description, type, price)
-VALUES ('The Gopnik', 'some','Tracksuit', 200)
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('The Gopnik', 'some','Tracksuit', 'discrete units', 200)
 ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO productMaster (name, description, type, price)
-VALUES ('Greta''s Runners', 'some','RunningShoes', 120)
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('Greta''s Runners', 'some','RunningShoes', 'discrete units',120)
 ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO account (name, password)
-VALUES ('Mister Dude', 'daddy chill')
-ON CONFLICT (name) DO NOTHING;
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('Seeds of Doubt', 'some','SunflowerSeed', 'grams', 120)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO coupon_master (name, description, type, percentage_off)
+VALUES ('20% Discount', 'Select this coupon to get a discount of 20%','Discount', 20)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO coupon_master (name, description, type, reward, reward_quantity, to_buy, buy_quantity)
+VALUES ('Buy Seeds Get The Gopnik', 'Select this coupon get ''The Gopnik'' for free by purchasing 200 grams of Seeds of Doubt','Bogo', 'The Gopnik', 1, 'Seeds of Doubt', 200)
+    ON CONFLICT (name) DO NOTHING;

@@ -5,8 +5,6 @@ import Product from "./product";
  * in the point-of-sale system
  */
 export class Tracksuit extends Product {
-    static readonly measurementUnit: string = "discrete";
-
     constructor(name: string, description: string, price: number, quantity: number) {
         super(name, description, price, quantity);
     }

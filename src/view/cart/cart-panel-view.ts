@@ -1,6 +1,9 @@
 import type CartController from "../../controller/cart-controller";
 import type Listener from "../../listener";
 import type Cart from "../../model/cart";
+import { Tracksuit } from "../../model/product/tracksuit.ts";
+import {RunningShoes} from "../../model/product/running-shoes.ts";
+import {SunflowerSeed} from "../../model/product/sunflower-seed.ts";
 
 /**
  * The CartPanelView presents all the {@link Product} instances added to the {@link Cart}.
@@ -19,6 +22,7 @@ export default class CartPanelView implements Listener {
         this.#cartPanelDiv = document.createElement("div");
         this.#cartPanelDiv.id = "cart-panel";
         this.#appendProducts();
+        this.#appendCoupons();
 
         document.querySelector("main")!.appendChild(this.#cartPanelDiv);
     }
@@ -26,6 +30,7 @@ export default class CartPanelView implements Listener {
     notify() {
         this.#cartPanelDiv.innerHTML = '';    
         this.#appendProducts();
+        this.#appendCoupons();
     }
 
     /**
@@ -40,10 +45,33 @@ export default class CartPanelView implements Listener {
             productDiv.className = "product-cart-item";
             productDiv.innerHTML = `
                 <h3>${p.name} </h3>
-                <p> quantity: ${p.quantity}</p>
-                <p>$${p.price * p.quantity}</p>`;
+                <p> quantity: ${p.quantity} ${eval(`${p.constructor.name}.measurementUnit`)}</p>
+                <p>${p.price * p.quantity}</p>`;
+
+
 
             this.#cartPanelDiv.appendChild(productDiv);
+        });
+    }
+
+    /**
+     * Maps each {@link Coupon} in the {@link Cart} to an HTML
+     * representation and appends to the div for cart panel
+     */
+    #appendCoupons() {
+        this.#cart.coupons.forEach(c => {
+            let couponDiv = document.createElement("div");
+
+            // setting up div content
+            couponDiv.className = "coupon-cart-item";
+            couponDiv.innerHTML = `
+                <h3>${c.name} </h3>
+                <p>${c.description}</p>
+            `;
+
+
+
+            this.#cartPanelDiv.appendChild(couponDiv);
         });
     }
 }

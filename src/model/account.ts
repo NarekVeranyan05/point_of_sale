@@ -1,7 +1,8 @@
 import { assert } from "../assertions";
 import Cart from "./cart"
-import db from "./connection";
-import type Receipt from "./receipt"
+import db from "./assets/connection.ts";
+import Receipt from "./receipt"
+import { hash, generateSalt } from "./assets/hasher.ts";
 
 export default class Account {
     #name: string;
@@ -9,25 +10,72 @@ export default class Account {
     #receipts: Array<Receipt>;
 
     static async login(accountName: string, password: string): Promise<Account> {
-        // checking if account exists
-        const accountRes = await db().query<{exists: boolean}>(`select exists (select 1 from Account where name='${accountName}' and password='${password}')`);
+        const saltRes = await db().query<{
+            salt: string
+        }>(
+            "SELECT * FROM Account WHERE name=$1", [accountName]
+        );
+
+        if(saltRes.rows.length === 0)
+            throw new IncorrectAccountNameOrPasswordError();
+
+        // @ts-ignore
+        const hashed = await hash(password, Uint8Array.fromHex(saltRes.rows[0].salt));
+
+        const accountRes = await db().query<{
+            exists: boolean
+        }>(
+            "SELECT EXISTS (SELECT 1 FROM Account WHERE name=$1 AND password=$2)",
+            [accountName, hashed]
+        );
 
         if(!accountRes.rows[0].exists)
-            throw new AccountDoesNotExistError();
+            throw new IncorrectAccountNameOrPasswordError();
 
-        return new Account(accountName, new Cart());
+        let account = new Account(accountName, await Cart.fetchCartForAccount(accountName));
+        account.#receipts = await Receipt.fetchForAccount(accountName);
+
+        return account;
     }
 
     static async signup(accountName: string, password: string): Promise<Account> {
+        if(password.length == 0 || accountName.length == 0)
+            throw new EmptyNameOrPasswordError();
+
         // checking if account exists
-        const accountRes = await db().query<{exists: boolean}>(`select exists( select 1 from Account where name='${accountName}' and password='${password}')`);
+        const accountRes = await db().query<{
+            exists: boolean
+        }>(
+            "SELECT EXISTS (SELECT 1 FROM Account WHERE name=$1)",
+            [accountName]
+        );
 
         if(accountRes.rows[0].exists)
             throw new AccountAlreadyExistsError();
 
-        await db().query(`insert into Account (name, password) values (${accountName}, ${password})`);
+        const salt = generateSalt();
+        const hashed = await hash(password, salt);
 
-        return new Account(accountName, new Cart());
+        await db().query(
+            "INSERT INTO Account (name, password, salt) VALUES ($1, $2, $3)",
+            // @ts-ignore
+            [accountName, hashed, salt.toHex()]
+        );
+
+        let results = await db().query<{
+            id: number
+        }>(
+            "INSERT INTO Cart (id, account) VALUES (default, $1) RETURNING id",
+            [accountName]
+        );
+
+        let cart  = new Cart();
+        cart.id = results.rows[0].id;
+
+        let account = new Account(accountName, cart);
+        account.#receipts = await Receipt.fetchForAccount(accountName);
+
+        return account;
     }
 
     constructor(name: string, cart: Cart) {
@@ -38,14 +86,27 @@ export default class Account {
         this.#checkAccount();
     }
 
+    get name() {
+        this.#checkAccount();
+
+        return this.#name;
+    }
+
     get cart(): Cart {
+        this.#checkAccount();
+
         return this.#cart;
     }
 
-    addReceipt(receipt: Receipt) {
+    get receipts(): ReadonlyArray<Receipt> {
+        return this.#receipts;
+    }
+
+    async addReceipt(receipt: Receipt) {
         this.#checkAccount();
 
         this.#receipts.push(receipt);
+        await Receipt.store(receipt, this.#name);
 
         this.#checkAccount();
     }
@@ -55,5 +116,6 @@ export default class Account {
     }
 }
 
-export class AccountDoesNotExistError extends Error { };
-export class AccountAlreadyExistsError extends Error { };
+export class IncorrectAccountNameOrPasswordError extends Error { }
+export class AccountAlreadyExistsError extends Error { }
+export class EmptyNameOrPasswordError extends Error { }

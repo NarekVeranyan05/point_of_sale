@@ -17,7 +17,7 @@ flowchart LR
     login_option_selection[login option selection]
     create_account{create <br> account}
     login_to_account{login to account}
-    transaction_view[[transaction_view]]
+    transaction_view[[transaction view]]
 
     login_view == name \n password ==> login_option_selection
 
@@ -30,6 +30,7 @@ flowchart LR
     login_to_account -. logged in .-> transaction_view
 
     login_to_account -. incorrect account \n name or password .-> login_option_selection
+      login_to_account -. empty name or password .-> login_option_selection
 end
 ```
 
@@ -54,6 +55,9 @@ subgraph view products
 end
 ```
 
+#### Changes
+* Alongside with a product, the user enters a quantity of how much of that Product to add to a Cart
+
 ### Check out
 
 The checkout flow has been modified to now accept input of the coupon, 
@@ -63,12 +67,22 @@ apply the coupon to the cart before producing a receipt.
 flowchart TB
 subgraph checkout
     checkout_screen[[checkout screen]]
-    apply_coupon{apply coupon}
+    add_coupon{add coupon}
+    apply_coupons{apply coupons}
     transaction_screen[[transaction screen]]
 
-    checkout_screen == coupon ==> apply_coupon
+    checkout_screen == coupon ==> add_coupon
     
-    apply_coupon -. receipt .-> transaction_screen
+    add_coupon -. coupon added .-> checkout_screen
+    
+    checkout_screen == purchase ==> apply_coupons
+
+    apply_coupons -. receipt .-> transaction_screen
 end
 ```
+
+#### Changes
+* the user now has the option of selecting coupons to apply to a receipt upon purchase
+* and, as before, the user has the "buy" option that now first applies selected coupons, 
+  if any, and then produces a receipt
 

@@ -2,12 +2,12 @@ import { assert } from "../../assertions";
 import type Receipt from "../receipt";
 import Coupon from "./coupon";
 
-export default class Discount extends Coupon {
-    #amountOff: number;
+export class Discount extends Coupon {
+    percentageOff: number;
 
-    constructor(name: string, description: string, amountOff: number) {
+    constructor(name: string, description: string, percentageOff: number) {
         super(name, description);
-        this.#amountOff = amountOff;
+        this.percentageOff = percentageOff;
 
         this.#checkDiscount();
     }
@@ -16,13 +16,18 @@ export default class Discount extends Coupon {
         this.checkCoupon();
         this.#checkDiscount();
 
-        receipt.addDiscount(this.#amountOff);
+        receipt.addDiscount(Math.floor(receipt.listPrice * this.percentageOff / 100));
 
         this.checkCoupon();
         this.#checkDiscount();
     }
 
     #checkDiscount() {
-        assert(this.#amountOff > 0, "amountOff must be positive");
+        assert(this.percentageOff > 0, "percentageOff must be positive");
+        assert(this.percentageOff < 100, "percentageOff must be less than 100");
+    }
+
+    clone(): Discount {
+        return new Discount(this.name, this.description, this.percentageOff);
     }
 }

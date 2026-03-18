@@ -34,6 +34,7 @@ export default class ReceiptView {
 
         document.querySelector<HTMLDivElement>("#notifs")!.append(this.#receiptDiv);
         this.#appendProducts();
+        this.#appendCoupons();
 
         this.#linkButton();
     }
@@ -47,7 +48,7 @@ export default class ReceiptView {
 
     /**
      * Maps each {@link Product} in the Receipt to an HTML
-     * representation and appends to the the div for Receipt
+     * representation and appends to the div for Receipt
      */
     #appendProducts() {
         let productsUl = this.#receiptDiv.querySelector("ul")!;
@@ -56,6 +57,19 @@ export default class ReceiptView {
             productsUl.innerHTML += `
                 <li class="receipt-item">${p.name} | amount: ${p.quantity} | $${p.price * p.quantity}</li>`
         })
+    }
+
+    /**
+     * Maps each {@link Coupon} in the Receipt to an HTML
+     * representation and appends to the div for Receipt
+     */
+    #appendCoupons() {
+        let couponsUl = this.#receiptDiv.querySelector("ul")!;
+
+        [...this.#receipt.coupons].forEach(c => {
+            couponsUl.innerHTML += `
+                <li class="receipt-item">Coupon applied: '${c.name}'</li>`
+        });
     }
 
     /**

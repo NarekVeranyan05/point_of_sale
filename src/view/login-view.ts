@@ -33,21 +33,13 @@ export default class LoginView {
         this.#loginDialog.querySelector("#login-button")!.addEventListener("click", async () => {
             const accountName = this.#loginDialog.querySelector<HTMLInputElement>("#login-name")!.value;
             const password = this.#loginDialog.querySelector<HTMLInputElement>("#login-password")!.value;
-            try{
-                await this.#accountController.login(accountName, password);
-            } catch(e) {
-                new ErrorView(`Error: Account with name ${accountName} does not exist. Create such an account.`);
-            }
+            await this.#accountController.login(accountName, password);
         });
 
         this.#loginDialog.querySelector("#signup-button")!.addEventListener("click", async () => {
             const accountName = this.#loginDialog.querySelector<HTMLInputElement>("#login-name")!.value;
             const password = this.#loginDialog.querySelector<HTMLInputElement>("#login-password")!.value;
-            try{
-                await this.#accountController.signup(accountName, password);
-            } catch(e) {
-                new ErrorView(`Error: Account with name ${accountName} does not exist. Create such an account.`);
-            }
+            await this.#accountController.signup(accountName, password);
         });
     }
 
