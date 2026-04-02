@@ -3,7 +3,7 @@ import Receipt from "../src/model/receipt";
 import {Tracksuit} from "../src/model/product/tracksuit";
 import {Discount} from "../src/model/coupon/discount";
 import {Bogo} from "../src/model/coupon/bogo";
-import {RunningShoes} from "../src/model/product/running-shoes";
+import {Shoes} from "../src/model/product/shoes";
 
 test("Discount applies to Receipt", () => {
     let p = new Tracksuit("obj", "some", 120, 1);
@@ -19,7 +19,7 @@ test("Discount applies to Receipt", () => {
 
 test("Bogo applies  Receipt", () => {
     let p1 = new Tracksuit("obj", "some", 120, 1);
-    let p2 = new RunningShoes("obj", "some", 120, 1);
+    let p2 = new Shoes("obj", "some", 120, 1);
     let bogo = new Bogo("some", "some", p2, p2);
 
     let receipt = new Receipt(

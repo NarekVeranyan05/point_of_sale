@@ -15,6 +15,10 @@ export default class Cart {
     #coupons: Array<Coupon> 
     #listeners: Array<Listener>;
 
+    /**
+     * Fetches the Cart of an Account
+     * @param accountName the Account name to fetch the Cart for
+     */
     static async fetchCartForAccount(accountName: string): Promise<Cart> {
         let cart = new Cart();
 

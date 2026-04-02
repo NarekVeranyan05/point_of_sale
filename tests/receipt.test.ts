@@ -1,7 +1,7 @@
 import {expect, test, vi} from "vitest";
 import Account from "../src/model/account";
 import {Tracksuit} from "../src/model/product/tracksuit";
-import {RunningShoes} from "../src/model/product/running-shoes";
+import {Shoes} from "../src/model/product/shoes";
 import {Bogo} from "../src/model/coupon/bogo";
 
 vi.mock("../src/model/assets/hasher.ts", () => ({
@@ -12,7 +12,7 @@ vi.mock("../src/model/assets/hasher.ts", () => ({
 test("adds receipt to the account", async () => {
     let a = await Account.signup("some name for receipt", "some password");
     let p1 = new Tracksuit("The Gopnik", "some description", 120, 1);
-    let p2 = new RunningShoes("Greta's Runners", "some description", 120, 1);
+    let p2 = new Shoes("Greta's Runners", "some description", 120, 1);
 
     await a.cart.addProduct(p1);
     let coupon = new Bogo(

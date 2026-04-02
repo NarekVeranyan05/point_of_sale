@@ -14,16 +14,24 @@ export default abstract class Product {
     #price: number;
     #quantity: number;
 
+    /**
+     * Factory method for creating a Product
+     * @param type the type of the Product (class name)
+     * @param name the name of the Product
+     * @param description the description of the Product
+     * @param price the price (cost) of the Product
+     * @param quantity the amount of Product to create
+     */
     static async createProduct(type: string, name: string, description: string, price: number, quantity: number): Promise<Product> {
-        const { RunningShoes } = await import("./running-shoes.ts");
-        const { SunflowerSeed } = await import("./sunflower-seed.ts")
+        const { Shoes } = await import("./shoes.ts");
+        const { Snacks } = await import("./snacks.ts")
         const { Tracksuit } = await import("./tracksuit.ts");
 
         switch (type) {
-            case "RunningShoes":
-                return new RunningShoes(name, description, price, quantity);
-            case "SunflowerSeed":
-                return new SunflowerSeed(name, description, price, quantity);
+            case "Shoes":
+                return new Shoes(name, description, price, quantity);
+            case "Snacks":
+                return new Snacks(name, description, price, quantity);
             case "Tracksuit":
                 return new Tracksuit(name, description, price, quantity);
             default:
@@ -31,6 +39,11 @@ export default abstract class Product {
         }
     }
 
+    /**
+     * Stores a Product belonging to a Cart to the database
+     * @param product the Product to store
+     * @param cartId the id of the owner Cart
+     */
     static async storeForCart(product: Product, cartId: number): Promise<Product> {
         const masterResult = await db().query<{
             type: string,
@@ -46,6 +59,12 @@ export default abstract class Product {
 
         return product;
     }
+
+    /**
+     * Stores a Product belonging to a Receipt to the database
+     * @param product the Product to store
+     * @param receiptId the id of the owner Receipt
+     */
     static async storeForReceipt(product: Product, receiptId: number): Promise<Product> {
         const masterResult = await db().query<{
             type: string,
@@ -62,6 +81,9 @@ export default abstract class Product {
         return product;
     }
 
+    /**
+     * Fetch inventory (master) table for Product
+     */
     static async fetchMaster(): Promise<Product[]> {
         const masterResults = await db().query<{
             name: string;
@@ -79,6 +101,10 @@ export default abstract class Product {
         return masterProducts;
     }
 
+    /**
+     * Fetches all Products belonging to the given Cart
+     * @param cartId the owner Cart's id
+     */
     static async fetchForCart(cartId: number): Promise<Product[]> {
         const masterResults = await db().query<{
             name: string,
@@ -109,6 +135,10 @@ export default abstract class Product {
         return products;
     }
 
+    /**
+     * Fetches all Products belonging to the given Receipt
+     * @param receptId the owner Receipt's id
+     */
     static async fetchForReceipt(receptId: number): Promise<Product[]> {
         const masterResults = await db().query<{
             name: string,
@@ -139,6 +169,10 @@ export default abstract class Product {
         return products;
     }
 
+    /**
+     * Delete Product from the database
+     * @param productId the id of the Product to delete
+     */
     static async delete(productId: number): Promise<void> {
         await db().query("DELETE FROM product WHERE id = $1", [productId]);
     }

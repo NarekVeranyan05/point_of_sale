@@ -5,7 +5,6 @@ export default class ErrorView {
     #errorDiv: HTMLDivElement;
 
     constructor(message: string) {
-        // creating the error div
         this.#errorDiv = document.createElement("div");
         this.#errorDiv.className = "notif error";
         this.#errorDiv.innerHTML = message;

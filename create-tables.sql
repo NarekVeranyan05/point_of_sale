@@ -92,15 +92,43 @@ VALUES ('The Gopnik', 'some','Tracksuit', 'discrete units', 200)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO product_master (name, description, type, measurement_unit, price)
-VALUES ('Greta''s Runners', 'some','RunningShoes', 'discrete units',120)
+VALUES ('Greta''s Runners', 'some','Shoes', 'discrete units',32)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO product_master (name, description, type, measurement_unit, price)
-VALUES ('Seeds of Doubt', 'some','SunflowerSeed', 'grams', 120)
+VALUES ('Seeds of Doubt', 'some','Snacks', 'grams', 67)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('The Harevan', 'Your Harevan''s Favourite','Tracksuit', 'discrete units', 88)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('The Hopar', 'Your Hopar''s Favourite','Tracksuit', 'discrete units', 46)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('Dad''s Slippers', 'Your dad has these','Shoes', 'discrete units', 120)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('Lada Station Slippers', 'See these when you repair your car','Shoes', 'discrete units', 22)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('Ararat Slippers', 'Meant to wear when climbing Ararat','Shoes', 'discrete units', 88)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO product_master (name, description, type, measurement_unit, price)
+VALUES ('Tatik''s Pickled Everything', 'Your grandma has these always','Snacks', 'grams', 150)
     ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO coupon_master (name, description, type, percentage_off)
 VALUES ('20% Discount', 'Select this coupon to get a discount of 20%','Discount', 20)
+    ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO coupon_master (name, description, type, reward, reward_quantity, to_buy, buy_quantity)
+VALUES ('Buy Seeds Get The Gopnik', 'Select this coupon get ''The Gopnik'' for free by purchasing 200 grams of Seeds of Doubt','Bogo', 'The Gopnik', 1, 'Seeds of Doubt', 200)
     ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO coupon_master (name, description, type, reward, reward_quantity, to_buy, buy_quantity)

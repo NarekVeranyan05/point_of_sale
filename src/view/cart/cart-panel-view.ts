@@ -2,8 +2,8 @@ import type CartController from "../../controller/cart-controller";
 import type Listener from "../../listener";
 import type Cart from "../../model/cart";
 import { Tracksuit } from "../../model/product/tracksuit.ts";
-import {RunningShoes} from "../../model/product/running-shoes.ts";
-import {SunflowerSeed} from "../../model/product/sunflower-seed.ts";
+import {Shoes} from "../../model/product/shoes.ts";
+import {Snacks} from "../../model/product/snacks.ts";
 
 /**
  * The CartPanelView presents all the {@link Product} instances added to the {@link Cart}.

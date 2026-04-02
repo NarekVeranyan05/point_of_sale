@@ -9,6 +9,11 @@ export default class Account {
     #cart: Cart;
     #receipts: Array<Receipt>;
 
+    /**
+     * Logs into an existing Account in the system
+     * @param accountName the name of the Account to log in to
+     * @param password the password for that Account
+     */
     static async login(accountName: string, password: string): Promise<Account> {
         const saltRes = await db().query<{
             salt: string
@@ -38,6 +43,11 @@ export default class Account {
         return account;
     }
 
+    /**
+     * Signs up for a new Account in the system
+     * @param accountName the name of the new Account to add to the database
+     * @param password the password of the new Account to add to the database
+     */
     static async signup(accountName: string, password: string): Promise<Account> {
         if(password.length == 0 || accountName.length == 0)
             throw new EmptyNameOrPasswordError();
@@ -102,6 +112,10 @@ export default class Account {
         return this.#receipts;
     }
 
+    /**
+     * Adds a receipt to the Account
+     * @param receipt the receipt to add
+     */
     async addReceipt(receipt: Receipt) {
         this.#checkAccount();
 

@@ -8,6 +8,15 @@ export default abstract class Coupon {
     #name: string;
     #description: string;
 
+    /**
+     * Factory method for Coupons
+     * @param type the type of Coupon to create (class name)
+     * @param name the name of the Coupon
+     * @param description the description of the Coupon
+     * @param percentage_off the discount percentage of the Coupon
+     * @param reward the reward Product of the Coupon
+     * @param to_buy the Product to buy to get a reward
+     */
     static async createCoupon(type: string, name: string, description: string, percentage_off?: number, reward?: Product, to_buy?: Product): Promise<Coupon> {
         const { Bogo } = await import("./bogo.ts");
         const { Discount } = await import("./discount.ts");
@@ -22,6 +31,11 @@ export default abstract class Coupon {
         }
     }
 
+    /**
+     * Stores a Coupon belonging to a Cart to the database
+     * @param coupon the coupon to store
+     * @param cartId the owner cart's id
+     */
     static async storeForCart(coupon: Coupon, cartId: number): Promise<Coupon> {
         const masterResult = await db().query<{
             type: string,
@@ -52,6 +66,12 @@ export default abstract class Coupon {
 
         return coupon;
     }
+
+    /**
+     * Stores a Receipt belonging to a Cart to the database
+     * @param coupon the coupon to store
+     * @param receiptId the owner receipt's id
+     */
     static async storeForReceipt(coupon: Coupon, receiptId: number): Promise<Coupon> {
         const masterResult = await db().query<{
             type: string,
@@ -82,6 +102,10 @@ export default abstract class Coupon {
 
         return coupon;
     }
+
+    /**
+     * Fetch inventory (master) table for Coupon
+     */
     static async fetchMaster(): Promise<Coupon[]> {
         const masterResults = await db().query<{
             name: string;
@@ -129,6 +153,11 @@ export default abstract class Coupon {
 
         return masterCoupons;
     }
+
+    /**
+     * Fetches all Coupons belonging to the given Cart
+     * @param cartId the owner Cart's id
+     */
     static async fetchForCart(cartId: number): Promise<Coupon[]> {
         const productMasterResults = await db().query<{
             name: string;
@@ -178,6 +207,11 @@ export default abstract class Coupon {
 
         return coupons;
     }
+
+    /**
+     * Fetches all Coupons belonging to the given Receipt
+     * @param receiptId the owner Receipt's id
+     */
     static async fetchForReceipt(receiptId: number): Promise<Coupon[]> {
         const productMasterResults = await db().query<{
             name: string;
@@ -227,6 +261,11 @@ export default abstract class Coupon {
 
         return coupons;
     }
+
+    /**
+     * Delete Coupon from the database
+     * @param couponId the id of the Coupon to delete
+     */
     static async delete(couponId: number): Promise<void> {
         await db().query("DELETE FROM coupon WHERE id = $1", [couponId]);
     }

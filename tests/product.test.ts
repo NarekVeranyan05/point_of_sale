@@ -7,22 +7,22 @@ vi.mock("../src/model/assets/hasher.ts", () => ({
 
 import {Tracksuit} from "../src/model/product/tracksuit";
 import Product, {NonPositiveProductAmountError} from "../src/model/product/product";
-import {RunningShoes} from "../src/model/product/running-shoes";
-import {SunflowerSeed} from "../src/model/product/sunflower-seed";
+import {Shoes} from "../src/model/product/shoes";
+import {Snacks} from "../src/model/product/snacks";
 import {AssertionError} from "../src/assertions";
 import Account from "../src/model/account";
 
 test("factory method creates instances", () => {
-    Product.createProduct("RunningShoes", "some", "some", 1, 1).then(p => {
-        expect(p).toBeInstanceOf(RunningShoes);
+    Product.createProduct("Shoes", "some", "some", 1, 1).then(p => {
+        expect(p).toBeInstanceOf(Shoes);
     })
 
     Product.createProduct("Tracksuit", "some", "some", 1, 1).then(p => {
         expect(p).toBeInstanceOf(Tracksuit);
     })
 
-    Product.createProduct("SunflowerSeed", "some", "some", 1, 1).then(p => {
-        expect(p).toBeInstanceOf(SunflowerSeed);
+    Product.createProduct("Snacks", "some", "some", 1, 1).then(p => {
+        expect(p).toBeInstanceOf(Snacks);
     })
 })
 
@@ -34,8 +34,8 @@ test("factory method rejects invalid class", async () => {
 
 test("product clones are distinct", () => {
     let p1 = new Tracksuit("some", "some", 1, 1);
-    let p2 = new RunningShoes("some", "some", 1, 1);
-    let p3 = new SunflowerSeed("some", "some", 1, 1);
+    let p2 = new Shoes("some", "some", 1, 1);
+    let p3 = new Snacks("some", "some", 1, 1);
 
     expect(p1.clone() === p1).toBeFalsy();
     expect(p2.clone() === p2).toBeFalsy();

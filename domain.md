@@ -1,7 +1,7 @@
 ---
 title: Domain Model of the Point of Sale System
 author: Narek Veranyan (veranyan@myumanitoba.ca)
-date: February 27, 2026
+date: March 20, 2026
 ---
 
 ## Domain Model
@@ -75,13 +75,13 @@ class Tracksuit { }
 
 Tracksuit --|> Product
 
-class RunningShoes { }
+class Shoes { }
 
-RunningShoes --|> Product
+Shoes --|> Product
 
-class SunflowerSeed { }
+class Snacks { }
 
-SunflowerSeed --|> Product
+Snacks --|> Product
 
 class Receipt {
     -PlainDateTime timestamp

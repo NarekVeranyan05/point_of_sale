@@ -7,7 +7,7 @@ date: January 18, 2026
 ## Domain Model
 
 > Changes
-> * replaced the `ProductType` enumeration with TrackSuit and RunningShoes classes
+> * replaced the `ProductType` enumeration with TrackSuit and Shoes classes
 > * turned Product into an abstract class
 
 ```mermaid
@@ -39,9 +39,9 @@ classDiagram
 
     Tracksuit --|> Product
 
-    class RunningShoes { }
+    class Shoes { }
 
-    RunningShoes --|> Product
+    Shoes --|> Product
 
     class Cart {
         -~number id

@@ -1,15 +1,15 @@
 import Product from "./product";
 
 /**
- * RunningShoes is a type of {@link Product} sold
+ * Shoes is a type of {@link Product} sold
  * in the point-of-sale system
  */
-export class RunningShoes extends Product {
+export class Shoes extends Product {
     constructor(name: string, description: string, price: number, quantity: number) {
         super(name, description, price, quantity);
     }
 
     clone(): Product {
-        return new RunningShoes(this.name, this.description, this.price, this.quantity);
+        return new Shoes(this.name, this.description, this.price, this.quantity);
     }
 }

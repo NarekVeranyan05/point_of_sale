@@ -1,8 +1,14 @@
 import db from "../assets/connection.ts";
 
+/**
+ * Measurements stores all the units of measurement of the Products
+ */
 export class Measurements {
     static units: Map<string, string>;
 
+    /**
+     * Fetches the Product measurement units
+     */
     static async fetchMeasures() {
         Measurements.units = new Map<string, string>();
 
@@ -16,8 +22,5 @@ export class Measurements {
         results.rows.forEach(row => {
             Measurements.units.set(row.type, row.measurement_unit);
         });
-        console.log(results);
-
-        console.log(Measurements.units)
     }
 }

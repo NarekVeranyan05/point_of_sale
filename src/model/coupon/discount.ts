@@ -12,6 +12,10 @@ export class Discount extends Coupon {
         this.#checkDiscount();
     }
 
+    /**
+     * Applies a discount to the receipt
+     * @param receipt
+     */
     applyCoupon(receipt: Receipt): void {
         this.checkCoupon();
         this.#checkDiscount();

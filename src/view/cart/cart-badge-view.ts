@@ -19,7 +19,7 @@ export default class CartBadgeView implements Listener {
         // adding the cart counter and checkout button to the document
         document.querySelector<HTMLDivElement>("#header")!.innerHTML = `
             <div id='cart-counter'>Cart: ${this.#cart.products.reduce((acc, p) => acc + p.quantity, 0)}</div>
-            <button class='button' id='checkout-button'>Checkout</button>`;
+            <button class='button' id='checkout-button'>Check out</button>`;
 
         this.#cartEl = document.querySelector<HTMLButtonElement>("#cart-counter")!;
 

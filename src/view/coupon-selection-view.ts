@@ -1,6 +1,10 @@
 import type CartController from "../controller/cart-controller.ts";
 import type Coupon from "../model/coupon/coupon.ts";
 
+/**
+ * The CouponSelectionView prompts the user to either select one or
+ * more Coupons to add to the Cart, or to proceed to purchase.
+ */
 export default class CouponSelectionView {
     #cartController: CartController;
     #coupons: Array<Coupon>;
@@ -29,10 +33,16 @@ export default class CouponSelectionView {
         console.log("hi");
     }
 
+    /**
+     * Removes the presentation from the document
+     */
     close() {
         document.querySelector("#app")!.removeChild(this.#couponsEl);
     }
 
+    /**
+     * Appends the HTML elements for Coupons to the screen
+     */
     #appendCoupons() {
         this.#coupons.forEach(coupon => {
             let couponEl = document.createElement("div");
@@ -51,6 +61,9 @@ export default class CouponSelectionView {
         });
     }
 
+    /**
+     * Appends the purchase button to the screen
+     */
     #appendPurchaseButton() {
         let purchaseButton = document.createElement("button");
         purchaseButton.setAttribute("class", "button purchase-button");
@@ -62,12 +75,17 @@ export default class CouponSelectionView {
         });
     }
 
+    /**
+     * Links a select button for a given coupon element
+     * @param coupon the Coupon that `couponEl` represents
+     * @param couponEl the HTML element for Coupon
+     */
     #linkCouponButton(coupon: Coupon, couponEl: HTMLDivElement) {
         let couponBuyButton = couponEl.querySelector("button")!;
 
-        couponBuyButton!.addEventListener("click", () => {
-            this.#cartController.addCoupon(coupon);
-            // this.#cartController.purchase();
+        couponBuyButton!.addEventListener("click", async () => {
+            await this.#cartController.addCoupon(coupon);
+
             this.#couponsEl.removeChild(couponEl);
         });
     }

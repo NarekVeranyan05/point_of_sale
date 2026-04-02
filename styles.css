@@ -17,11 +17,8 @@ body details {
 }
 
 #app {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    width: 100vw;
     height: 100vh;
+    overflow: visible; /* Change from hidden to visible */
 }
 
 #header {
@@ -39,7 +36,10 @@ body details {
 
 main {
     width: calc(100% - 1rem);
-    height: 100%;
+    /* Change height to min-height so it can grow */
+    min-height: calc(100vh - 60px);
+    /* Remove overflow: hidden to allow the body/app to scroll */
+    overflow: visible;
 
     display: grid;
 
@@ -67,6 +67,9 @@ main {
     border-radius: 10em;
     font-size: 0.9rem;
     font-weight: 600;
+
+    border: 0.11em solid #0E6C9C;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
 
     transition:
         background-color 0.2s,
@@ -103,7 +106,7 @@ main {
 
 .buy-button {
     background-color: #F4F7FA;
-    border: 0.11em solid #0E6C9C
+    border: 0.11em solid #0E6C9C;
 }
 
 .product {
@@ -111,8 +114,9 @@ main {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: max-content;
-    
+
+    flex: 0 0 10em;
+    height: 25em;
     padding: 1em;
 
     border: 0.2em solid #0E6C9C;
@@ -120,12 +124,17 @@ main {
 }
 
 #products {
-    display: flex;
-    flex-direction: row;
-    gap: 4em;
-    width: 100%;
-    height: 100%;
-    padding: 1em;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 1rem;
+
+    /* --- ADD THESE THREE LINES --- */
+    height: calc(100vh - 80px); /* Adjust 80px to fit your header/padding */
+    overflow-y: scroll;         /* Forces the scrollbar to exist */
+    min-height: 0;              /* Tells the grid 'you are allowed to be smaller than your content' */
+    /* ----------------------------- */
+
+    padding: 1rem;
     box-sizing: border-box;
 }
 
@@ -162,6 +171,7 @@ main {
     grid-row: 1 / -1;
 
     display: flex;
+    height: 150%;
     flex-direction: column;
     gap: 1em;
     padding: 1em;
@@ -268,9 +278,9 @@ main {
     margin: auto;
 
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    padding: 1.25em;
-    width: min(380px, 90vw);
+    width: min(450px, 90vw);
 
     background: #F4F7FA;
     border: 0.2em solid #0E6C9C;
@@ -279,8 +289,19 @@ main {
     box-shadow: 0em 0em 15px 5px #79848aa7;
 }
 
+#product-amount-input-box {
+    inset: 0;
+    margin: auto;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: min(450px, 90vw);
+
+}
+
 .product-amount-dialog input {
-    width: 20em;
+    width: 25em;
     height: 3em;
     padding: 0 1em;
 
@@ -307,7 +328,7 @@ main {
     display: flex;
     flex-direction: column;
     width: 50vw;
-    height: 30vh;
+    height: 35vh;
     align-items: center;
     justify-content: center;
 }

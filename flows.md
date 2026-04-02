@@ -34,6 +34,8 @@ flowchart LR
 end
 ```
 
+Changes: added an "empty account name / password output"
+
 ### View products
 
 ```mermaid
@@ -54,9 +56,6 @@ subgraph view products
     verify_cart -. cart .-> checkout_screen
 end
 ```
-
-#### Changes
-* Alongside with a product, the user enters a quantity of how much of that Product to add to a Cart
 
 ### Check out
 
@@ -80,9 +79,3 @@ subgraph checkout
     apply_coupons -. receipt .-> transaction_screen
 end
 ```
-
-#### Changes
-* the user now has the option of selecting coupons to apply to a receipt upon purchase
-* and, as before, the user has the "buy" option that now first applies selected coupons, 
-  if any, and then produces a receipt
-

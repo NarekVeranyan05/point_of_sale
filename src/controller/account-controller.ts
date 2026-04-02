@@ -37,6 +37,8 @@ export default class AccountController {
 
             this.#loginView.close();
         } catch (e) {
+            this.#loginView.enableButtons();
+
             if(e instanceof IncorrectAccountNameOrPasswordError)
                new ErrorView(`Error: Incorrect account name or password. Please, try again.`);
         }
@@ -55,6 +57,8 @@ export default class AccountController {
 
             this.#loginView.close();
         } catch (e) {
+            this.#loginView.enableButtons();
+
             if(e instanceof AccountAlreadyExistsError)
                 new ErrorView(`Error: Account with name ${accountName} already exists. Pick another name or choose to log in to that account.`);
             else if(e instanceof EmptyNameOrPasswordError)

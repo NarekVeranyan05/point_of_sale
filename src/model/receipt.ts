@@ -16,6 +16,11 @@ export default class Receipt {
     #discount: number;
     #listPrice: number;
 
+    /**
+     * Stores a Receipt for an Account to the database
+     * @param receipt the Receipt to store
+     * @param accountName the name of the owner Account
+     */
     static async store(receipt: Receipt, accountName: string): Promise<Receipt> {
         let results = await db().query<{
             id: number,
@@ -39,6 +44,10 @@ export default class Receipt {
         return receipt;
     }
 
+    /**
+     * Fetches all Receipts belonging to the given Account
+     * @param accountName the name of the Account to fetch the Receipts of
+     */
     static async fetchForAccount(accountName: string): Promise<Receipt[]> {
         let results = await db().query<{
             id: number,
@@ -106,7 +115,7 @@ export default class Receipt {
 
     /**
      * Adds a {@link Product} to the cart
-     * @param product the product to add to the cart
+     * @param product the Product to add to the cart
      */
     addProduct(product: Product) {
         this.#checkReceipt();
@@ -117,12 +126,20 @@ export default class Receipt {
         this.#checkReceipt();
     }
 
+    /**
+     * Adds a {@link Coupon} to the cart
+     * @param coupon the Coupon to add to the cart
+     */
     addCoupon(coupon: Coupon) {
         this.#coupons.push(coupon);
 
         coupon.applyCoupon(this);
     }
 
+    /**
+     * Adds a discount to the Receipt
+     * @param amt the amount of discount to add
+     */
     addDiscount(amt: number) {
         this.#checkReceipt();
 

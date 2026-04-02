@@ -7,7 +7,7 @@ vi.mock("../src/model/assets/hasher.ts", () => ({
 
 import { Bogo } from "../src/model/coupon/bogo";
 import { Tracksuit } from "../src/model/product/tracksuit";
-import { RunningShoes } from "../src/model/product/running-shoes";
+import { Shoes } from "../src/model/product/shoes";
 import { EmptyCartException } from '../src/model/receipt';
 import Account from "../src/model/account";
 
@@ -62,7 +62,7 @@ test("Empty cart cannot be purchased", async () => {
 test("single-item cart can be purchased", async () => {
     let a = await Account.signup("some name 5", "some password");
     let p1 = new Tracksuit("The Gopnik", "some description", 120, 1);
-    let p2 = new RunningShoes("Greta's Runners", "some description", 120, 1);
+    let p2 = new Shoes("Greta's Runners", "some description", 120, 1);
 
     await a.cart.addProduct(p1);
     let coupon = new Bogo(
@@ -88,7 +88,7 @@ test("single-item cart can be purchased", async () => {
 test("multi-item cart can be purchased", async () => {
     let a = await Account.signup("some name 6", "some password");
     let p1 = new Tracksuit("The Gopnik", "some description", 120, 1);
-    let p2 = new RunningShoes("Greta's Runners", "some other description", 100, 1);
+    let p2 = new Shoes("Greta's Runners", "some other description", 100, 1);
 
     await a.cart.addProduct(p1);
     await a.cart.addProduct(p2);
@@ -102,7 +102,7 @@ test("multi-item cart can be purchased", async () => {
 
 test("cart notifies listeners", async () => {
     let a = await Account.signup("some name 7", "some password");
-    let p = new RunningShoes("The Gopnik", "some other description", 120, 1);
+    let p = new Shoes("The Gopnik", "some other description", 120, 1);
     let notified = false;
 
     a.cart.registerListener({notify: () => notified = true});

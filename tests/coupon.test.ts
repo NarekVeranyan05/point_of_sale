@@ -11,8 +11,8 @@ import {Discount} from "../src/model/coupon/discount";
 import {Tracksuit} from "../src/model/product/tracksuit";
 import Product from "../src/model/product/product";
 import {AssertionError} from "../src/assertions";
-import {RunningShoes} from "../src/model/product/running-shoes";
-import {SunflowerSeed} from "../src/model/product/sunflower-seed";
+import {Shoes} from "../src/model/product/shoes";
+import {Snacks} from "../src/model/product/snacks";
 import Account from "../src/model/account";
 
 test("factory method creates instances", () => {
