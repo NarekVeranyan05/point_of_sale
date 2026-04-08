@@ -1,9 +1,10 @@
-import { assert } from "../assertions";
+import {assert} from "../assertions";
 import type Listener from "../listener";
 import Coupon from "./coupon/coupon";
 import Product from "./product/product";
 import Receipt from "./receipt";
 import db from "./assets/connection.ts";
+import {StorageType} from "../../../../../../../Desktop/resubmissions/point_of_sale_2_implementation/src/model/assets/storage-type.ts";
 
 /**
  * The Cart class contains all the {@link Product} instances that
@@ -28,8 +29,8 @@ export default class Cart {
         }>(`SELECT * FROM cart WHERE account = $1`, [accountName]);
         cart.#id = results.rows[0].id
 
-        cart.#products = await Product.fetchForCart(cart.#id);
-        cart.#coupons = await Coupon.fetchForCart(cart.#id);
+        cart.#products = await Product.fetch(StorageType.CART, cart.#id);
+        cart.#coupons = await Coupon.fetch(StorageType.CART, cart.#id);
 
         return cart;
     }
@@ -76,7 +77,7 @@ export default class Cart {
         this.#checkCart();
 
         this.#products.push(product);
-        await Product.storeForCart(product, this.id!);
+        await Product.store(product, StorageType.CART, this.id!);
 
         this.#notifyAll();
 
@@ -91,7 +92,7 @@ export default class Cart {
         this.#checkCart();
 
         this.#coupons.push(coupon);
-        await Coupon.storeForCart(coupon, this.id!);
+        await Coupon.store(coupon, StorageType.CART, this.id!);
 
         this.#notifyAll();
 
@@ -102,14 +103,18 @@ export default class Cart {
      * Purchases the items in the current Cart
      * @returns the {@link Receipt} for the purchase
      */
-    purchase(): Receipt {
+    async purchase(): Promise<Receipt> {
         this.#checkCart();
 
         let receipt = new Receipt(this.#products.map(p => p), []);
         this.#coupons.forEach(c => receipt.addCoupon(c));
 
-        this.#products.forEach(async p => await Product.delete(p.id!));
-        this.#coupons.forEach(async c => await Coupon.delete(c.id!));
+        for (const p of this.#products) {
+            await Product.delete(p.id!);
+        }
+        for (const c of this.#coupons) {
+            await Coupon.delete(c.id!);
+        }
         this.#products.length = 0;
         this.#coupons.length = 0;
         this.#notifyAll();

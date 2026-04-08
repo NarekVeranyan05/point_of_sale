@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/papaparse": "^5.5.2",
     "@vitest/coverage-v8": "^4.0.18",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
@@ -16,6 +17,9 @@
   },
   "dependencies": {
     "@electric-sql/pglite-repl": "^0.2.33",
-    "@js-temporal/polyfill": "^0.5.1"
+    "@js-temporal/polyfill": "^0.5.1",
+    "@types/seedrandom": "^3.0.8",
+    "papaparse": "^5.5.3",
+    "seedrandom": "^3.0.5"
   }
 }

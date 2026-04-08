@@ -22,5 +22,7 @@ export class Measurements {
         results.rows.forEach(row => {
             Measurements.units.set(row.type, row.measurement_unit);
         });
+
+        console.log(Measurements.units);
     }
 }

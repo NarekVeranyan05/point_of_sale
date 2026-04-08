@@ -51,30 +51,30 @@ main {
     padding-left: 1rem;
 }
 
+/* 1. Define the custom angle property so we can animate gradients natively */
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+/* Base styles remain untouched */
 .button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     width: max-content;
     height: 3em;
     padding: 0 1em;
-
     background-color: white;
-    color: inherit;
-    border: none;
-
+    color: #0E6C9C;
     border-radius: 10em;
     font-size: 0.9rem;
     font-weight: 600;
 
     border: 0.11em solid #0E6C9C;
     box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-
-    transition:
-        background-color 0.2s,
-        color 0.2s,
-        box-shadow 0.2s;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
 .button:hover,
@@ -85,6 +85,72 @@ main {
     background-color: #0E6C9C;
     color: white;
     box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+}
+
+/* =========================================
+   Animated Suggest Button with Moving Glow
+   ========================================= */
+#suggest-button {
+    width: 100%;
+    position: relative;
+    /* Use a transparent border to define the track for our animated border */
+    border: 0.11em solid transparent;
+
+    /* The rotating border gradient */
+    background-image: conic-gradient(from var(--angle), #0E6C9C 0%, #0E6C9C 80%, #60A5FA 95%, #0E6C9C 100%);
+    background-origin: border-box;
+    background-clip: border-box;
+
+    animation: spin-border 3s linear infinite;
+    z-index: 1;
+}
+
+/* LAYER 1: The synchronized moving outer glow */
+#suggest-button::before {
+    content: "";
+    position: absolute;
+    inset: -0.11em; /* Match the exact size of the border */
+    border-radius: inherit;
+
+    /* We only color the 'bright spot' of the gradient, keeping the rest transparent */
+    background-image: conic-gradient(from var(--angle), transparent 0%, transparent 80%, #60A5FA 95%, transparent 100%);
+    filter: blur(10px); /* Soften it into a shadow */
+    opacity: 0.8;
+
+    animation: spin-border 3s linear infinite;
+    z-index: -2;
+}
+
+/* LAYER 2: The solid inner mask (gives us smooth hover color transitions) */
+#suggest-button::after {
+    content: "";
+    position: absolute;
+    inset: 0; /* Covers everything inside the border */
+    border-radius: inherit;
+    background-color: white;
+    z-index: -1;
+    transition: background-color 0.2s;
+}
+
+/* Keep text layered on top */
+#suggest-button span {
+    z-index: 2;
+}
+
+/* Hover States */
+#suggest-button:hover {
+    color: white;
+}
+
+#suggest-button:hover::after {
+    background-color: #0E6C9C;
+}
+
+/* The single animation driving both the border and the glow */
+@keyframes spin-border {
+    to {
+        --angle: 360deg;
+    }
 }
 
 #cart-counter {
@@ -100,7 +166,7 @@ main {
 
     text-align: center;
     border-radius: 10em;
-    font-weight: 600;   
+    font-weight: 600;
     font-size: 0.9rem;
 }
 
@@ -116,7 +182,7 @@ main {
     align-items: center;
 
     flex: 0 0 10em;
-    height: 25em;
+    height: 28em;
     padding: 1em;
 
     border: 0.2em solid #0E6C9C;
@@ -190,7 +256,7 @@ main {
     padding: 1em;
     background-color: #79848a;
     color: #F4F7FA;
-    
+
     border: 0.2em solid #0E6C9C;
     border-radius: 1em;
 }
@@ -234,7 +300,7 @@ main {
     width: 90%;
     padding: 1em;
     border-radius: 1em;
-    font-weight: 600;   
+    font-weight: 600;
 
     box-shadow: 0em 0em 15px 5px #79848aa7;
 }
@@ -260,7 +326,7 @@ main {
     width: 3em;
     height: 3em;
     justify-content: center;
-    
+
     background-color: white;
     border: none;
 
@@ -273,49 +339,66 @@ main {
     }
 }
 
-.product-amount-dialog {
-    inset: 0;
-    margin: auto;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: min(450px, 90vw);
-
-    background: #F4F7FA;
-    border: 0.2em solid #0E6C9C;
-    border-radius: 1.25em;
-
-    box-shadow: 0em 0em 15px 5px #79848aa7;
-}
-
-#product-amount-input-box {
-    inset: 0;
-    margin: auto;
-
+/* 1. Unified Container for the Input + Button row */
+#product-amount-input-box,
+#suggester-money-amount-input-box {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    width: min(450px, 90vw);
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem; /* Space between input and button */
 
+    width: 90%; /* Center within the dialog */
+    margin: 0.5rem auto;
+    box-sizing: border-box;
 }
 
-.product-amount-dialog input {
-    width: 25em;
-    height: 3em;
-    padding: 0 1em;
+/* 2. Unified Input Styling */
+.product-amount-dialog input,
+.suggester-money-amount-dialog input {
+    flex: 1; /* Grow to fill space */
+    min-width: 0; /* Prevents overflow */
+    height: 3.2em;
+    padding: 0 1.25em;
 
     background: white;
     color: #1f2a33;
-
     border: 0.11em solid #0E6C9C;
     border-radius: 10em;
 
     font-size: 0.95rem;
     font-weight: 600;
-
     outline: none;
     box-sizing: border-box;
+}
+
+/* 3. Button Adjustments inside Dialogs */
+.product-amount-dialog .button,
+.suggester-money-amount-dialog #suggest-button {
+    width: auto; /* Shrink to fit text */
+    flex: 0 0 auto; /* Don't stretch the button */
+    height: 3.2em; /* Match input height perfectly */
+    padding: 0 1.5em;
+    white-space: nowrap; /* Prevent "Auto-buy" from wrapping */
+}
+
+/* 4. Dialog Box Tweaks */
+.product-amount-dialog,
+.suggester-money-amount-dialog {
+    inset: 0;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    width: min(500px, 95vw); /* Responsive width */
+
+    background: #F4F7FA;
+    border: 0.2em solid #0E6C9C;
+    border-radius: 1.25em;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+
+    /* Crucial: allow the 'Noticeable Glow' to bleed outside the box */
+    overflow: visible;
+    padding-bottom: 1rem;
 }
 
 

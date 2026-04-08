@@ -1,43 +1,36 @@
-import type CartController from "../../controller/cart-controller";
 import type Listener from "../../listener";
 import type Cart from "../../model/cart";
-import { Tracksuit } from "../../model/product/tracksuit.ts";
-import {Shoes} from "../../model/product/shoes.ts";
-import {Snacks} from "../../model/product/snacks.ts";
+import {Measurements} from "../../model/product/measurements.ts";
 
 /**
  * The CartPanelView presents all the {@link Product} instances added to the {@link Cart}.
  */
 export default class CartPanelView implements Listener {
     #cart: Cart;
-    #controller: CartController;
     #cartPanelDiv: HTMLDivElement;
 
-    constructor(cart: Cart, controller: CartController) {
+    constructor(cart: Cart) {
         this.#cart = cart;
-        this.#controller = controller;
         this.#cart.registerListener(this);
 
         // creating the panel div
         this.#cartPanelDiv = document.createElement("div");
         this.#cartPanelDiv.id = "cart-panel";
-        this.#appendProducts();
-        this.#appendCoupons();
+        this.#appendItems();
 
         document.querySelector("main")!.appendChild(this.#cartPanelDiv);
     }
 
     notify() {
         this.#cartPanelDiv.innerHTML = '';    
-        this.#appendProducts();
-        this.#appendCoupons();
+        this.#appendItems();
     }
 
     /**
      * Maps each {@link Product} in the {@link Cart} to an HTML
      * representation and appends to the div for cart panel
      */
-    #appendProducts() {
+    #appendItems() {
         this.#cart.products.forEach(p => {
             let productDiv = document.createElement("div");
 
@@ -45,20 +38,14 @@ export default class CartPanelView implements Listener {
             productDiv.className = "product-cart-item";
             productDiv.innerHTML = `
                 <h3>${p.name} </h3>
-                <p> quantity: ${p.quantity} ${eval(`${p.constructor.name}.measurementUnit`)}</p>
+                <p> 
+                    quantity: ${p.quantity} 
+                    ${Measurements.units.get(p.constructor.name)}
+                </p>
                 <p>${p.price * p.quantity}</p>`;
-
-
 
             this.#cartPanelDiv.appendChild(productDiv);
         });
-    }
-
-    /**
-     * Maps each {@link Coupon} in the {@link Cart} to an HTML
-     * representation and appends to the div for cart panel
-     */
-    #appendCoupons() {
         this.#cart.coupons.forEach(c => {
             let couponDiv = document.createElement("div");
 
@@ -68,8 +55,6 @@ export default class CartPanelView implements Listener {
                 <h3>${c.name} </h3>
                 <p>${c.description}</p>
             `;
-
-
 
             this.#cartPanelDiv.appendChild(couponDiv);
         });

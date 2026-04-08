@@ -24,11 +24,11 @@ export class Bogo extends Coupon {
      * The price of the reward product is removed as a discount
      * @param receipt the receipt to add the reward to
      */
-    applyCoupon(receipt: Receipt): void {
+    applyCoupon(receipt: Receipt) {
         this.checkCoupon();
 
-        receipt.addProduct(this.#toBuy);
-        receipt.addProduct(this.#reward);
+        receipt.addProduct(this.#toBuy.clone());
+        receipt.addProduct(this.#reward.clone());
         receipt.addDiscount(this.#reward.price);
 
         this.checkCoupon();

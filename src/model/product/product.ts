@@ -1,5 +1,6 @@
 import {assert, AssertionError} from "../../assertions";
 import db from "../assets/connection.ts";
+import type {StorageType} from "../../../../../../../../Desktop/resubmissions/point_of_sale_2_implementation/src/model/assets/storage-type.ts";
 
 /**
  * The Product class represents an item that can be added to a {@link Cart} 
@@ -22,7 +23,7 @@ export default abstract class Product {
      * @param price the price (cost) of the Product
      * @param quantity the amount of Product to create
      */
-    static async createProduct(type: string, name: string, description: string, price: number, quantity: number): Promise<Product> {
+    static async create(type: string, name: string, description: string, price: number, quantity: number): Promise<Product> {
         const { Shoes } = await import("./shoes.ts");
         const { Snacks } = await import("./snacks.ts")
         const { Tracksuit } = await import("./tracksuit.ts");
@@ -40,41 +41,24 @@ export default abstract class Product {
     }
 
     /**
-     * Stores a Product belonging to a Cart to the database
+     * Stores a Product belonging to a container class to the database
      * @param product the Product to store
-     * @param cartId the id of the owner Cart
+     * @param storage the container to store the Product for (either Cart or Receipt)
+     * @param id the id of the storage
      */
-    static async storeForCart(product: Product, cartId: number): Promise<Product> {
-        const masterResult = await db().query<{
-            type: string,
-        }>("SELECT * FROM product_master");
-
+    static async store(product: Product, storage: StorageType, id: number): Promise<Product> {
         let results = await db().query<{id: number}>(`
-            INSERT INTO product(id, name, description, type, price, quantity, cart)  
+            INSERT INTO product(id, name, description, type, price, quantity, ${storage})  
             VALUES (DEFAULT, $1, $2, $3, $4, $5, $6)
             RETURNING id;
-        `, [product.#name, product.#description, masterResult.rows[0].type, product.#price, product.#quantity, cartId]);
-
-        product.#id = results.rows[0].id
-
-        return product;
-    }
-
-    /**
-     * Stores a Product belonging to a Receipt to the database
-     * @param product the Product to store
-     * @param receiptId the id of the owner Receipt
-     */
-    static async storeForReceipt(product: Product, receiptId: number): Promise<Product> {
-        const masterResult = await db().query<{
-            type: string,
-        }>("SELECT * FROM product_master");
-
-        let results = await db().query<{id: number}>(`
-            INSERT INTO product(id, name, description, type, price, quantity, receipt)  
-            VALUES (DEFAULT, $1, $2, $3, $4, $5, $6)
-            RETURNING id;
-        `, [product.#name, product.#description, masterResult.rows[0].type, product.#price, product.#quantity, receiptId]);
+        `, [
+            product.#name,
+            product.#description,
+            product.constructor.name,
+            product.#price,
+            product.#quantity,
+            id
+        ]);
 
         product.#id = results.rows[0].id
 
@@ -84,7 +68,7 @@ export default abstract class Product {
     /**
      * Fetch inventory (master) table for Product
      */
-    static async fetchMaster(): Promise<Product[]> {
+    static async fetchInventory(): Promise<Product[]> {
         const masterResults = await db().query<{
             name: string;
             description: string;
@@ -95,17 +79,18 @@ export default abstract class Product {
         let masterProducts: Product[] = [];
         for(let i = 0; i < masterResults.rows.length; i++) {
             let m = masterResults.rows[i];
-            let product = await this.createProduct(m.type, m.name, m.description, m.price, 1)
+            let product = await this.create(m.type, m.name, m.description, m.price, 1)
             masterProducts.push(product);
         }
         return masterProducts;
     }
 
     /**
-     * Fetches all Products belonging to the given Cart
-     * @param cartId the owner Cart's id
+     * Fetches all Products belonging to a container class
+     * @param storage the container to fetch the Products from (either Cart or Receipt)
+     * @param id the container id
      */
-    static async fetchForCart(cartId: number): Promise<Product[]> {
+    static async fetch(storage: StorageType, id: number): Promise<Product[]> {
         const masterResults = await db().query<{
             name: string,
             description: string,
@@ -119,47 +104,13 @@ export default abstract class Product {
             quantity: number,
             cart: number,
             receipt: number
-        }>(`SELECT * FROM product WHERE cart = $1`, [cartId]);
+        }>(`SELECT * FROM product WHERE ${storage} = $1`, [id]);
 
         let products: Product[] = [];
         for(let i = 0; i < productResults.rows.length; i++) {
             let row = productResults.rows[i];
             let master = masterResults.rows.find(m => m.name === row.name)!;
-            let p = await this.createProduct(master.type, row.name, master.description, master.price, row.quantity);
-
-            products.push(p);
-
-            p.#id = row.id;
-        }
-
-        return products;
-    }
-
-    /**
-     * Fetches all Products belonging to the given Receipt
-     * @param receptId the owner Receipt's id
-     */
-    static async fetchForReceipt(receptId: number): Promise<Product[]> {
-        const masterResults = await db().query<{
-            name: string,
-            description: string,
-            type: string,
-            price: number
-        }>("SELECT * FROM product_master");
-
-        const productResults = await db().query<{
-            id: number,
-            name: string,
-            quantity: number,
-            cart: number,
-            receipt: number
-        }>(`SELECT * FROM product WHERE receipt = $1`, [receptId]);
-
-        let products: Product[] = [];
-        for(let i = 0; i < productResults.rows.length; i++) {
-            let row = productResults.rows[i];
-            let master = masterResults.rows.find(m => m.name === row.name)!;
-            let p = await this.createProduct(master.type, row.name, master.description, master.price, row.quantity);
+            let p = await this.create(master.type, row.name, master.description, master.price, row.quantity);
 
             products.push(p);
 
@@ -177,7 +128,7 @@ export default abstract class Product {
         await db().query("DELETE FROM product WHERE id = $1", [productId]);
     }
 
-    constructor(name: string, description: string, price: number, quantity: number) {
+    protected constructor(name: string, description: string, price: number, quantity: number) {
         this.#name = name
         this.#description = description;
         this.#price = price;
@@ -240,4 +191,4 @@ export default abstract class Product {
     }
 }
 
-export class NonPositiveProductAmountError extends Error { };
+export class NonPositiveProductAmountError extends Error { }

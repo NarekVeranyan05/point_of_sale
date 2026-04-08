@@ -84,19 +84,19 @@ CREATE TABLE IF NOT EXISTS coupon(
 );
 
 INSERT INTO product_master (name, description, type, measurement_unit, price)
-VALUES ('Gary''s Tracks', 'some', 'Tracksuit', 'discrete units', 250)
+VALUES ('Gary''s Tracks', 'Gary puts some dirt in the eye', 'Tracksuit', 'discrete units', 250)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO product_master (name, description, type, measurement_unit, price)
-VALUES ('The Gopnik', 'some','Tracksuit', 'discrete units', 200)
+VALUES ('The Gopnik', 'Goes best with Seeds of Doubt','Tracksuit', 'discrete units', 200)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO product_master (name, description, type, measurement_unit, price)
-VALUES ('Greta''s Runners', 'some','Shoes', 'discrete units',32)
+VALUES ('Greta''s Runners', 'She runs with these all day','Shoes', 'discrete units',32)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO product_master (name, description, type, measurement_unit, price)
-VALUES ('Seeds of Doubt', 'some','Snacks', 'grams', 67)
+VALUES ('Seeds of Doubt', 'Goes best with The Gopnik','Snacks', 'grams', 67)
     ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO product_master (name, description, type, measurement_unit, price)

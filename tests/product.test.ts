@@ -13,22 +13,22 @@ import {AssertionError} from "../src/assertions";
 import Account from "../src/model/account";
 
 test("factory method creates instances", () => {
-    Product.createProduct("Shoes", "some", "some", 1, 1).then(p => {
+    Product.create("Shoes", "some", "some", 1, 1).then(p => {
         expect(p).toBeInstanceOf(Shoes);
     })
 
-    Product.createProduct("Tracksuit", "some", "some", 1, 1).then(p => {
+    Product.create("Tracksuit", "some", "some", 1, 1).then(p => {
         expect(p).toBeInstanceOf(Tracksuit);
     })
 
-    Product.createProduct("Snacks", "some", "some", 1, 1).then(p => {
+    Product.create("Snacks", "some", "some", 1, 1).then(p => {
         expect(p).toBeInstanceOf(Snacks);
     })
 })
 
 test("factory method rejects invalid class", async () => {
     await expect(
-        Product.createProduct("invalid_type", "some", "some", 1, 1)
+        Product.create("invalid_type", "some", "some", 1, 1)
     ).rejects.toThrow(AssertionError);
 })
 

@@ -1,7 +1,6 @@
 title: An assessment of the Point-of-Sale UI <br>
 author: Narek Veranyan (veranyan@myumanitoba.ca) <br>
 date: Winter 2026
----
 
 ---
 
@@ -16,7 +15,7 @@ Here's my entire UI for phase 1:
 My initial implementation of this UI was fairly visible because:
 
 * :+1: All the actions that the user can do are immediately shown on the screen.
-  The user may either add a product to a cart, or -- after adding some -- checkout with the
+  The user may either add a product to a cart, or – after adding some – check out with the
   items selected.
 
 ## Phase 1 feedback
@@ -24,7 +23,7 @@ My initial implementation of this UI was fairly visible because:
 My initial implementation of this UI had adequate feedback:
 
 * :+1: clicking the "Add to Cart" button shows as a response to the user that the item was successfully added
-  to the cart -- it displays the item information in a box to the right side of the screen, the cart panel, and
+  to the cart – it displays the item information in a box to the right side of the screen, the cart panel, and
   it updates the counter for the number of items in the cart, shown in the cart badge.
 
 ![phase_1_product_added.png](public/phase_1_product_added.png)
@@ -34,8 +33,9 @@ My initial implementation of this UI had adequate feedback:
   the notification as opposed to the rest of the system clearly indicates, together with the actual message of the
   notification, that it is a negative feedback about something that went wrong.
 
+
 * :-1: however, the negative feedback about an empty-cart checkout can be made clearer by
-  also asking the user to add products to the cart to fill it in for more informative feedback.
+  telling the user that they need to add a product to be able to check out to make it more informative.
 
 ![phase_1_empty_cart.png](public/phase_1_empty_cart.png)
   
@@ -85,9 +85,9 @@ Here are the major new parts of my interface for phase 2:
 ## Changes from phase 1
 
 * The main change made from phase 1 to phase 2 was that now the user has to log in or
-  sign up to the system first, before getting to browsing the catalogue and purchasing products.
+  sign up to the system first, before getting to browse the catalogue and purchase products.
 
-* The user is now prompted to enter a quantity of the selected product to be added to the cart
+* The user is now prompted to enter a quantity of the selected product to be added to the cart.
 
 * The user is now offered an option to select coupons to apply to the receipt upon purchase, so
   clicking on "checkout" button does not immediately proceed to purchasing the items.
@@ -98,37 +98,44 @@ The visibility for phase 2 is good.
 
 * :+1: In the context of login/signup screen, the system is very visible: the input fields and buttons
   to interact with the system are displayed in the centre. It clearly shows what state the user is
-  in the process of interacting with the system -- it is the login stage only after which they may use the system. Also, the cursor is auto-focused on one of the input
+  in the process of interacting with the system – it is the login stage only after which they may use the system. Also, the cursor is auto-focused on one of the input
   fields, making it clear that the user can enter text in that field.
 
 
-* :+1: The dialog for product amount is clearly visible. It is shown in the centre of the screen, with
+* :+1: The dialogue for product amount is clearly visible. It is shown in the centre of the screen, with
   the cursor auto-focusing on the input field and giving a description of what the prompt is,
-  making it clear to the user what stage they are at -- describing how much of the selected item they want to add.
+  making it clear to the user what stage they are at – describing how much of the selected item they want to add.
 
 
-* :+1: The selection screen for the coupons is visible since it is displayed in the centre of the UI, with
-  buttons visible next to the corresponding coupon to add to the cart. The prompt above informs the user
-  that they can skip adding coupons, and the user clearly knows that they are at the final step of making
+* :+1: The selection screen for the coupons is visible since it shows the list of all available coupons, with
+  buttons visible next to the corresponding coupon to add to the cart. The prompt at the top of the selection screen informs the user
+  that they can skip adding coupons by simply clicking the "purchase" button, and the user clearly knows that they are at the final step of making
   a purchase.
 
 
-* :-1: However, since logging in to the system can take a long time, the login and signup buttons are disabled
-  at the moment. But it is not shown in the UI that the button is disabled.
+* :-1: Since logging in to the system can take a long time, the login and signup buttons are disabled
+  at the moment (as can be verified in `login-view.ts`). But it is not shown in the UI that the action is sometimes possible in the context but 
+  currently disabled due to processing.
 
 ## Phase 2 feedback
+
+Phase 2 feedback is overall good.
 
 * :-1: Creating accounts takes noticeable amount of time, but the system does not communicate to the user that
   it is currently doing processing.
 
 
 * :+1: Unsuccessful login or signup is notified to the user with an error notification. The error notification
-  has a message reflecting the reason of the problem -- empty name or password, incorrect password, etc. The user
+  has a message reflecting the reason of the problem – empty name or password, incorrect password, etc. The user
   clearly knows what went wrong and how to fix it.
 
+![phase_2_unsuccessful_login.png](public/phase_2_unsuccessful_login.png)
+![phase_2_unsuccessful_login_signup.png](public/phase_2_unsuccessful_login_signup.png)
+![phase_2_unsuccessful_signup.png](public/phase_2_unsuccessful_signup.png)
 
-* :+1: Success in adding coupons to the cart is communicated to the user -- the system immediately displays the new
-  coupon in the cart panel, as well as removing the same coupon from further selection.
+
+* :+1: Success in adding coupons to the cart is communicated to the user – the system immediately displays the new
+  coupon in the cart panel, as well as removing that coupon from the selection screen.
 
   
 * All the other UI elements remained the same in terms of feedback since phase 1. 

@@ -1,14 +1,17 @@
-import { assert } from "../assertions";
+import {assert} from "../assertions";
 import Product from "./product/product";
 import {Temporal} from "@js-temporal/polyfill";
 import Coupon from "./coupon/coupon.ts";
 import db from "./assets/connection.ts";
+import {StorageType} from "../../../../../../../Desktop/resubmissions/point_of_sale_2_implementation/src/model/assets/storage-type.ts";
+import type Listener from "../listener.ts";
 
 /**
  * The Receipt class represents the receipt information of
  * all the {@link Product} instances in the purchased {@link Cart}
  */
 export default class Receipt {
+    #listeners: Array<Listener>;
     #id?: number;
     #timestamp: Temporal.PlainDateTime
     #products: Array<Product>;
@@ -34,11 +37,11 @@ export default class Receipt {
         receipt.#id = results.rows[0].id;
 
         receipt.#coupons.forEach(coupon=> {
-            Coupon.storeForReceipt(coupon, receipt.#id!);
+            Coupon.store(coupon, StorageType.RECEIPT, receipt.#id!);
         });
 
         receipt.#products.forEach(product=> {
-            Product.storeForReceipt(product, receipt.#id!);
+            Product.store(product, StorageType.RECEIPT, receipt.#id!);
         })
 
         return receipt;
@@ -59,8 +62,8 @@ export default class Receipt {
 
         let receipts: Receipt[] = [];
         for(let i = 0; i < results.rows.length; i++) {
-            let products = await Product.fetchForReceipt(results.rows[i].id);
-            let coupons = await Coupon.fetchForReceipt(results.rows[i].id);
+            let products = await Product.fetch(StorageType.RECEIPT, results.rows[i].id);
+            let coupons = await Coupon.fetch(StorageType.RECEIPT, results.rows[i].id);
 
             let receipt = new Receipt(products, coupons);
             receipt.#timestamp = results.rows[i].timestamp;
@@ -89,6 +92,8 @@ export default class Receipt {
         this.#coupons = coupons;
         this.#discount = 0;
         this.#listPrice = this.#products.reduce((acc, p) => acc + (p.price * p.quantity), 0);
+
+        this.#listeners = new Array<Listener>();
 
         this.#checkReceipt();
     }

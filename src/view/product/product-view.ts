@@ -1,7 +1,5 @@
-import type CartController from "../../controller/cart-controller";
 import type Product from "../../model/product/product";
-import type AccountController from "../../controller/account-controller.ts";
-import type Account from "../../model/account.ts";
+import type ProductController from "../../controller/product-controller.ts";
 
 /**
  * The ProductView presents a {@link Product} instance that can be
@@ -11,11 +9,11 @@ import type Account from "../../model/account.ts";
  */
 export default class ProductView {
     #product: Product;
-    #cartController: CartController;
+    #productController: ProductController;
     #productDiv: HTMLDivElement;
 
-    constructor(cartController: CartController, product: Product) {
-        this.#cartController = cartController;
+    constructor(productController: ProductController, product: Product) {
+        this.#productController = productController;
         this.#product = product;
 
         // creating the product div
@@ -27,6 +25,7 @@ export default class ProductView {
                     <p class="product-price">$${product.price}</p>
                 </div>
                 <img src="./public/${product.name}.png">
+                <p>${product.description}</p>
                 <button class="button buy-button">Add to Cart</button>
             </div>`;
         
@@ -40,7 +39,7 @@ export default class ProductView {
      */
     #linkButton() {
         this.#productDiv.querySelector("button")!.addEventListener("click", () => {
-            this.#cartController.showProductAmountDialogView(this.#product);
+            this.#productController.showProductAmountDialogView(this.#product);
         });
     }
 }

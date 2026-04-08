@@ -18,18 +18,18 @@ import Account from "../src/model/account";
 test("factory method creates instances", () => {
     let p = new Tracksuit("obj", "some", 1, 1);
 
-    Coupon.createCoupon("Bogo", "some", "some", undefined, p, p).then(p => {
+    Coupon.create("Bogo", "some", "some", undefined, p, p).then(p => {
         expect(p).toBeInstanceOf(Bogo);
     })
 
-    Coupon.createCoupon("Discount", "some", "some", 1, undefined, undefined).then(p => {
+    Coupon.create("Discount", "some", "some", 1, undefined, undefined).then(p => {
         expect(p).toBeInstanceOf(Discount);
     })
 })
 
 test("factory method rejects invalid class", async () => {
     await expect(
-        Coupon.createCoupon("invalid_type", "some", "some", undefined, undefined,  undefined)
+        Coupon.create("invalid_type", "some", "some", undefined, undefined,  undefined)
     ).rejects.toThrow(AssertionError);
 })
 

@@ -2,46 +2,46 @@ import Product from "../model/product/product";
 import CartBadgeView from "../view/cart/cart-badge-view";
 import CartPanelView from "../view/cart/cart-panel-view";
 import ErrorView from "../view/error-view";
-import ProductAmountDialogView from "../view/product/product-amount-dialog-view";
 import ReceiptView from "../view/receipt/receipt-view";
-import ProductView from "../view/product/product-view.ts";
 import Cart from "../model/cart.ts";
 import Coupon from "../model/coupon/coupon.ts";
 import CouponSelectionView from "../view/coupon-selection-view.ts";
 import AccountController from "./account-controller.ts";
-import {Measurements} from "../model/product/measurements.ts";
+import CartSuggesterView from "../view/cart/cart-suggester-view.ts";
+import CartSuggesterDialogView from "../view/cart/cart-suggester-dialog-view.ts";
+import {NegativeTotalAmountError, suggestProduct} from "../../ai/product-suggester.ts";
+import ProductController from "./product-controller.ts";
 
 /**
  * CartController is the controller for the {@link Cart} model class.
  */
 export default class CartController {
     #accountController: AccountController;
+    #productController: ProductController;
     #cart: Cart;
-    #productViews: Array<ProductView>; // ok to have sth like this?
     #cartBadgeView: CartBadgeView;
     #cartPanelView: CartPanelView;
-    #productAmountDialogView?: ProductAmountDialogView;
+    #cartSuggesterView?: CartSuggesterView
+    #cartSuggesterDialogView?: CartSuggesterDialogView;
     #couponSelectionView?: CouponSelectionView
     #receiptView?: ReceiptView;
 
     constructor(accountController: AccountController, cart: Cart) {
         this.#accountController = accountController;
+        this.#productController = new ProductController(this);
         this.#cart = cart
-        this.#productViews = new Array<ProductView>();
-
-        Product.fetchMaster().then(products => {
-            products.forEach(p => this.#productViews.push(new ProductView(this, p)));
-        });
-
-        Measurements.fetchMeasures();
 
         this.#cartBadgeView = new CartBadgeView(this.#cart, this);
-        this.#cartPanelView = new CartPanelView(this.#cart, this);
+        this.#cartPanelView = new CartPanelView(this.#cart);
+
+        if(cart.products.length > 0)
+            this.#cartSuggesterView = new CartSuggesterView(this.#cart, this);
     }
 
     set cart(cart: Cart) {
         this.#cart = cart;
     }
+
 
     /**
      * Adds a {@link Product} to the {@link Cart}
@@ -55,8 +55,8 @@ export default class CartController {
 
             await this.#cart.addProduct(pCpy);
 
-            this.#productAmountDialogView!.close();
-            this.#productAmountDialogView = undefined;
+            this.#productController.hideProductAmountDialogView()
+            this.#cartSuggesterView = new CartSuggesterView(this.#cart, this);
         }
         catch(e) {
             new ErrorView("Error: the quantity of the product should be a positive whole number, e.g. 6");
@@ -73,20 +73,27 @@ export default class CartController {
         await this.#cart.addCoupon(cCpy);
     }
 
-    showCart() {
-        this.#cartBadgeView = new CartBadgeView(this.#cart, this);
-        this.#cartPanelView = new CartPanelView(this.#cart, this);
+    async autoBuy(totalAmount: number) {
+        try {
+            let products = await suggestProduct(this.#cart.products.at(-1)!.name, totalAmount);
+            products.forEach(p => this.#cart.addProduct(p));
+
+            this.#cartSuggesterDialogView!.close();
+            this.#cartSuggesterDialogView = undefined;
+        } catch (e) {
+            if(e instanceof NegativeTotalAmountError) {
+                new ErrorView("Error: total amount of money cannot be negative. Provide a non-negative number. e.g. 100.");
+            }
+        }
     }
 
-    /**
-     * Displays the dialog for entering the quantity of a {@link Product} to add to {@link Cart}
-     * @param product the product selected to add to the cart
-     */
-    showProductAmountDialogView(product: Product) {
-        if(this.#productAmountDialogView) 
-            this.#productAmountDialogView.close();
+    showCart() {
+        this.#cartBadgeView = new CartBadgeView(this.#cart, this);
+        this.#cartPanelView = new CartPanelView(this.#cart);
+    }
 
-        this.#productAmountDialogView = new ProductAmountDialogView(product, this);
+    showCartSuggesterDialogView() {
+        this.#cartSuggesterDialogView = new CartSuggesterDialogView(this);
     }
 
     /**
@@ -98,10 +105,7 @@ export default class CartController {
         else if(this.#cart.products.length === 0)
             new ErrorView("Error: the cart is empty, cannot checkout.");
         else {
-            Coupon.fetchMaster().then(masterCoupons  => {
-                let notSelected = masterCoupons.filter(masterCoupon => !this.#cart.coupons.find(coupon => coupon.name === masterCoupon.name));
-                this.#couponSelectionView = new CouponSelectionView(this, notSelected);
-            });
+            this.#couponSelectionView = new CouponSelectionView(this, this.#cart);
         }
     }
 
@@ -116,7 +120,7 @@ export default class CartController {
     async purchase() {
         this.exitCheckout();
 
-        let receipt = this.#cart.purchase();
+        let receipt = await this.#cart.purchase();
         await this.#accountController.addReceipt(receipt);
 
         this.#receiptView = new ReceiptView(receipt);

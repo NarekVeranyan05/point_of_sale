@@ -1,4 +1,5 @@
 import type Receipt from "../../model/receipt";
+import type Listener from "../../listener.ts";
 
 /**
  * The ReceiptView presents a {@link Receipt} instance that lists
@@ -33,8 +34,8 @@ export default class ReceiptView {
         `;
 
         document.querySelector<HTMLDivElement>("#notifs")!.append(this.#receiptDiv);
-        this.#appendProducts();
-        this.#appendCoupons();
+        this.#appendItems();
+        this.#appendItems();
 
         this.#linkButton();
     }
@@ -47,27 +48,19 @@ export default class ReceiptView {
     }
 
     /**
-     * Maps each {@link Product} in the Receipt to an HTML
+     * Maps each {@link Product} and {@link Coupon} in the {@link Receipt} to an HTML
      * representation and appends to the div for Receipt
      */
-    #appendProducts() {
-        let productsUl = this.#receiptDiv.querySelector("ul")!;
+    #appendItems() {
+        let itemsUl = this.#receiptDiv.querySelector("ul")!;
         
         [...this.#receipt.products].forEach(p => {
-            productsUl.innerHTML += `
+            itemsUl.innerHTML += `
                 <li class="receipt-item">${p.name} | amount: ${p.quantity} | $${p.price * p.quantity}</li>`
-        })
-    }
-
-    /**
-     * Maps each {@link Coupon} in the Receipt to an HTML
-     * representation and appends to the div for Receipt
-     */
-    #appendCoupons() {
-        let couponsUl = this.#receiptDiv.querySelector("ul")!;
+        });
 
         [...this.#receipt.coupons].forEach(c => {
-            couponsUl.innerHTML += `
+            itemsUl.innerHTML += `
                 <li class="receipt-item">Coupon applied: '${c.name}'</li>`
         });
     }

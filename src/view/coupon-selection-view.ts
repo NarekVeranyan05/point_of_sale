@@ -1,5 +1,6 @@
-import type CartController from "../controller/cart-controller.ts";
-import type Coupon from "../model/coupon/coupon.ts";
+import CartController from "../controller/cart-controller.ts";
+import Coupon from "../model/coupon/coupon.ts";
+import type Cart from "../model/cart.ts";
 
 /**
  * The CouponSelectionView prompts the user to either select one or
@@ -7,12 +8,12 @@ import type Coupon from "../model/coupon/coupon.ts";
  */
 export default class CouponSelectionView {
     #cartController: CartController;
-    #coupons: Array<Coupon>;
+    #cart: Cart;
     #couponsEl: HTMLDivElement;
 
-    constructor(cartController: CartController, coupons: Array<Coupon>) {
+    constructor(cartController: CartController, cart: Cart) {
         this.#cartController = cartController;
-        this.#coupons = coupons;
+        this.#cart = cart;
 
         this.#couponsEl = document.createElement("div");
         this.#couponsEl.setAttribute("id", "coupon-selection");
@@ -30,7 +31,6 @@ export default class CouponSelectionView {
         this.#appendCoupons();
         this.#appendPurchaseButton();
 
-        console.log("hi");
     }
 
     /**
@@ -43,8 +43,11 @@ export default class CouponSelectionView {
     /**
      * Appends the HTML elements for Coupons to the screen
      */
-    #appendCoupons() {
-        this.#coupons.forEach(coupon => {
+    async #appendCoupons() {
+        let masterCoupons = await Coupon.fetchInventory();
+        let notSelected = masterCoupons.filter(masterCoupon => !this.#cart.coupons.find(coupon => coupon.name === masterCoupon.name));
+
+        notSelected.forEach(coupon => {
             let couponEl = document.createElement("div");
 
             couponEl.innerHTML = `
