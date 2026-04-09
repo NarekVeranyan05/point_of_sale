@@ -34,6 +34,10 @@ body details {
     background-color: #F4F7FA;
 }
 
+#account-name {
+    margin-right: auto;
+}
+
 main {
     width: calc(100% - 1rem);
     /* Change height to min-height so it can grow */

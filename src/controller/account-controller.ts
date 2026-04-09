@@ -7,6 +7,7 @@ import LoginView from "../view/login-view";
 import CartController from "./cart-controller";
 import ErrorView from "../view/error-view.ts";
 import Receipt from "../model/receipt.ts";
+import AccountNameView from "../view/account-name-view.ts";
 
 /**
  * AccountController is the controller for the {@link Account} model class.
@@ -14,6 +15,7 @@ import Receipt from "../model/receipt.ts";
 export default class AccountController {
     #account?: Account;
     #cartController?: CartController
+    #accountNameView?: AccountNameView
     #loginView: LoginView
 
     constructor() {
@@ -32,12 +34,17 @@ export default class AccountController {
      */
     async login(accountName: string, password: string) {
         try {
+            this.#accountNameView = new AccountNameView();
+
             this.#account = await Account.login(accountName, password);
             this.#cartController = new CartController(this, this.#account.cart);
 
             this.#loginView.close();
+            this.#accountNameView.account = this.#account;
         } catch (e) {
             this.#loginView.enableButtons();
+            this.#accountNameView!.close();
+            this.#accountNameView = undefined;
 
             if(e instanceof IncorrectAccountNameOrPasswordError)
                new ErrorView(`Error: Incorrect account name or password. Please, try again.`);
@@ -52,12 +59,17 @@ export default class AccountController {
      */
     async signup(accountName: string, password: string) {
         try {
+            this.#accountNameView = new AccountNameView();
+
             this.#account = await Account.signup(accountName, password);
             this.#cartController = new CartController(this, this.#account.cart);
 
             this.#loginView.close();
+            this.#accountNameView.account = this.#account;
         } catch (e) {
             this.#loginView.enableButtons();
+            this.#accountNameView!.close();
+            this.#accountNameView = undefined;
 
             if(e instanceof AccountAlreadyExistsError)
                 new ErrorView(`Error: Account with name ${accountName} already exists. Pick another name or choose to log in to that account.`);
