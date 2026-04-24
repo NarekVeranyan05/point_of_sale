@@ -2,7 +2,7 @@ import {assert, AssertionError} from "../../assertions";
 import type Receipt from "../receipt.ts";
 import db from "../assets/connection.ts";
 import Product from "../product/product.ts";
-import type {StorageType} from "../../../../../../../../Desktop/resubmissions/point_of_sale_2_implementation/src/model/assets/storage-type.ts";
+import type {StorageType} from "../assets/markov-model/storage-type.ts";
 
 export default abstract class Coupon {
     #id?: number;

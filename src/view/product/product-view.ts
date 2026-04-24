@@ -29,7 +29,7 @@ export default class ProductView {
                 <button class="button buy-button">Add to Cart</button>
             </div>`;
         
-        document.querySelector<HTMLDivElement>("main")!.appendChild(this.#productDiv);
+        document.querySelector<HTMLDivElement>("#products-container")!.appendChild(this.#productDiv);
         this.#linkButton();
     }
 

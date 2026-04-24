@@ -39,21 +39,27 @@ Changes: added an "empty account name / password output"
 ### View products
 
 ```mermaid
-flowchart TB
+flowchart LR
 subgraph view products
     transaction_view[[transaction view]]
     add_to_cart{add to cart}
     verify_cart{verify cart}
+    perform_auto_buy{perform auto-buy}
     checkout_screen[[checkout screen]]
 
     transaction_view == product, quantity ==> add_to_cart
     transaction_view == checkout ==> verify_cart
+    transaction_view == auto-buy budget ==> perform_auto_buy 
 
     add_to_cart -. product added .-> transaction_view
 
     verify_cart -. empty cart .-> transaction_view
-    
+        
     verify_cart -. cart .-> checkout_screen
+
+    perform_auto_buy -. non-positive \n budget is invalid .-> transaction_view
+    
+    perform_auto_buy -. products added .-> transaction_view
 end
 ```
 

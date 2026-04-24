@@ -1,5 +1,10 @@
 import { promises as fs } from 'fs';
 import Papa from "papaparse";
+import * as path from "node:path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dict: Record<string, number> = {
     'a': 0,
@@ -18,7 +23,10 @@ export const trainMarkov = async () => {
     const T = Array.from({ length: 10 }, () => Array(10).fill(0));
     const transitionCounts = new Array<number>(10).fill(0);
 
-    const trainData = await fs.readFile("./training.csv", 'utf-8');
+    const trainData = await fs.readFile(
+        path.resolve(__dirname, "./training.csv"),
+        'utf-8'
+    );
 
     let p: {data: string[][]} = Papa.parse<string[]>(trainData, {
         header: false,
@@ -38,9 +46,17 @@ export const trainMarkov = async () => {
     const TCSV = Papa.unparse(T);
     const transitionCountsCSV = Papa.unparse([transitionCounts]);
 
-    await fs.writeFile('./markov-model.csv', TCSV);
-    await fs.appendFile('./markov-model.csv', '\n\n');
-    await fs.appendFile('./markov-model.csv', transitionCountsCSV);
+    await fs.writeFile(
+        path.resolve(__dirname, "./markov-model.csv"),
+        TCSV);
+    await fs.appendFile(
+        path.resolve(__dirname, "./markov-model.csv"),
+        '\n\n'
+    );
+    await fs.appendFile(
+        path.resolve(__dirname, "./markov-model.csv"),
+        transitionCountsCSV
+    );
 }
 
 trainMarkov();

@@ -9,7 +9,6 @@ import CouponSelectionView from "../view/coupon-selection-view.ts";
 import AccountController from "./account-controller.ts";
 import CartSuggesterView from "../view/cart/cart-suggester-view.ts";
 import CartSuggesterDialogView from "../view/cart/cart-suggester-dialog-view.ts";
-import {NegativeTotalAmountError, suggestProduct} from "../../ai/product-suggester.ts";
 import ProductController from "./product-controller.ts";
 
 /**
@@ -63,6 +62,16 @@ export default class CartController {
         }
     }
 
+    async addProductsUpToAmount(amount: number) {
+        try {
+            await this.#cart.addProductsUpToAmount(amount);
+            this.#cartSuggesterDialogView!.close();
+            this.#cartSuggesterDialogView = undefined;
+        } catch(e) {
+            new ErrorView("Error: the quantity of the product should be a positive whole number, e.g. 6");
+        }
+    }
+
     /**
      * Adds a {@link Coupon} to the {@link Cart}
      * @param coupon the coupon to add to the cart
@@ -71,20 +80,6 @@ export default class CartController {
         let cCpy = coupon.clone();
 
         await this.#cart.addCoupon(cCpy);
-    }
-
-    async autoBuy(totalAmount: number) {
-        try {
-            let products = await suggestProduct(this.#cart.products.at(-1)!.name, totalAmount);
-            products.forEach(p => this.#cart.addProduct(p));
-
-            this.#cartSuggesterDialogView!.close();
-            this.#cartSuggesterDialogView = undefined;
-        } catch (e) {
-            if(e instanceof NegativeTotalAmountError) {
-                new ErrorView("Error: total amount of money cannot be negative. Provide a non-negative number. e.g. 100.");
-            }
-        }
     }
 
     showCart() {
@@ -126,4 +121,3 @@ export default class CartController {
         this.#receiptView = new ReceiptView(receipt);
     }
 }
-

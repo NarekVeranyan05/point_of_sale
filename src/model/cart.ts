@@ -4,7 +4,8 @@ import Coupon from "./coupon/coupon";
 import Product from "./product/product";
 import Receipt from "./receipt";
 import db from "./assets/connection.ts";
-import {StorageType} from "../../../../../../../Desktop/resubmissions/point_of_sale_2_implementation/src/model/assets/storage-type.ts";
+import {StorageType} from "./assets/markov-model/storage-type.ts";
+import MarkovModel from "./assets/markov-model/markov-model.ts";
 
 /**
  * The Cart class contains all the {@link Product} instances that
@@ -83,6 +84,23 @@ export default class Cart {
 
         this.#checkCart();
     }
+
+    /**
+     * Adds products up to given amount to the cart
+     */
+    async addProductsUpToAmount(amount: number) {
+        assert(this.#products.length !== 0, "cannot auto-buy with empty cart");
+
+        if(amount <= 0)
+            throw new NegativeTotalAmountError();
+
+        let model = await MarkovModel.getInstance();
+        let newProducts = await model.generateOutputs(
+            this.#products.at(-1)!.name, amount
+        );
+        this.#products.push(...newProducts);
+        this.#notifyAll();
+    }
     
     /**
      * Adds a {@link Coupon} to the cart
@@ -154,3 +172,5 @@ export default class Cart {
         assert((this.#products.length > 0) || (this.#coupons.length == 0), "empty cart cannot have coupons.");
     }
 }
+
+export class NegativeTotalAmountError extends Error { }

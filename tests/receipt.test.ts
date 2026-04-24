@@ -21,7 +21,8 @@ test("adds receipt to the account", async () => {
         p2, p2);
     await a.cart.addCoupon(coupon);
 
-    await a.addReceipt(a.cart.purchase());
+    let r = await a.cart.purchase();
+    await a.addReceipt(r);
 
     await Account.signup("some name for receipt 1", "my pass");
     a = await Account.login("some name for receipt", "some password");

@@ -1,152 +1,168 @@
+:root {
+    --bg: #F4F7FA;
+    --panel: #ffffff;
+    --primary: #0E6C9C;
+    --muted: #79848a;
+    --text: #1f2a33;
+    --danger: #e5533d;
+    --shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    --radius-lg: 1.25rem;
+    --radius-md: 1rem;
+    --radius-pill: 999px;
+    --border-strong: 0.2rem solid var(--primary);
+    --border-soft: 0.11rem solid var(--primary);
+}
+
 body {
-    display: flex;
-    flex-direction: column-reverse;
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    min-width: 320px;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+        sans-serif;
+    background: var(--bg);
+    color: var(--text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 body details {
     display: block;
-    position: relative;
     width: 100%;
-    height: max-content;
+    box-sizing: border-box;
 }
 
 #app {
-    height: 100vh;
-    overflow: visible; /* Change from hidden to visible */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 #header {
     display: flex;
     align-items: center;
-    justify-content: right;
-    gap: 1em;
-
-    width: 100%;
-    height: 60px;
-    padding: 1em;
+    justify-content: flex-end;
+    gap: 1rem;
+    min-height: 4.5rem;
+    padding: 1rem 1.5rem;
     box-sizing: border-box;
-    background-color: #F4F7FA;
+    background-color: var(--bg);
+    border-bottom: var(--border-soft);
+    position: sticky;
+    top: 0;
+    z-index: 20;
 }
 
 main {
-    width: calc(100% - 1rem);
-    /* Change height to min-height so it can grow */
-    min-height: calc(100vh - 60px);
-    /* Remove overflow: hidden to allow the body/app to scroll */
-    overflow: visible;
-
-    display: grid;
-
-    /* left grid columns + one fixed right column */
-    grid-template-columns: repeat(4, calc(18.75% - 1rem)) 25%;
-    grid-template-rows: auto 1fr;
-
-    gap: 1rem;
-    padding-left: 1rem;
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    box-sizing: border-box;
+    min-height: 0;
 }
 
-/* 1. Define the custom angle property so we can animate gradients natively */
+#products-container {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 1rem;
+}
+
+#products-container > div {
+    flex: 1 1 16rem;
+    min-width: 16rem;
+    max-width: 22rem;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0 1rem;
+    background-color: var(--panel);
+    color: var(--primary);
+    border-radius: var(--radius-pill);
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: var(--border-soft);
+    box-shadow: var(--shadow);
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+    box-sizing: border-box;
+}
+
+.button:hover,
+.buy-button:hover,
+#signup-button:hover,
+#login-button:hover,
+.purchase-button:hover {
+    cursor: pointer;
+    background-color: var(--primary);
+    color: var(--panel);
+    transform: translateY(-1px);
+}
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 @property --angle {
     syntax: "<angle>";
     initial-value: 0deg;
     inherits: false;
 }
 
-/* Base styles remain untouched */
-.button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: max-content;
-    height: 3em;
-    padding: 0 1em;
-    background-color: white;
-    color: #0E6C9C;
-    border-radius: 10em;
-    font-size: 0.9rem;
-    font-weight: 600;
-
-    border: 0.11em solid #0E6C9C;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-}
-
-.button:hover,
-.buy-button:hover,
-#signup-button:hover,
-#login-button:hover {
-    cursor: pointer;
-    background-color: #0E6C9C;
-    color: white;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-}
-
-/* =========================================
-   Animated Suggest Button with Moving Glow
-   ========================================= */
 #suggest-button {
     width: 100%;
     position: relative;
-    /* Use a transparent border to define the track for our animated border */
-    border: 0.11em solid transparent;
-
-    /* The rotating border gradient */
-    background-image: conic-gradient(from var(--angle), #0E6C9C 0%, #0E6C9C 80%, #60A5FA 95%, #0E6C9C 100%);
+    border: var(--border-soft) solid transparent;
+    background-image: conic-gradient(from var(--angle), var(--primary) 0%, var(--primary) 80%, #60A5FA 95%, var(--primary) 100%);
     background-origin: border-box;
     background-clip: border-box;
-
     animation: spin-border 3s linear infinite;
     z-index: 1;
 }
 
-/* LAYER 1: The synchronized moving outer glow */
 #suggest-button::before {
     content: "";
     position: absolute;
-    inset: -0.11em; /* Match the exact size of the border */
+    inset: -0.11em;
     border-radius: inherit;
-
-    /* We only color the 'bright spot' of the gradient, keeping the rest transparent */
     background-image: conic-gradient(from var(--angle), transparent 0%, transparent 80%, #60A5FA 95%, transparent 100%);
-    filter: blur(10px); /* Soften it into a shadow */
+    filter: blur(10px);
     opacity: 0.8;
-
     animation: spin-border 3s linear infinite;
     z-index: -2;
 }
 
-/* LAYER 2: The solid inner mask (gives us smooth hover color transitions) */
 #suggest-button::after {
     content: "";
     position: absolute;
-    inset: 0; /* Covers everything inside the border */
+    inset: 0;
     border-radius: inherit;
-    background-color: white;
+    background-color: var(--panel);
     z-index: -1;
     transition: background-color 0.2s;
 }
 
-/* Keep text layered on top */
 #suggest-button span {
     z-index: 2;
 }
 
-/* Hover States */
 #suggest-button:hover {
-    color: white;
+    color: var(--panel);
 }
 
 #suggest-button:hover::after {
-    background-color: #0E6C9C;
+    background-color: var(--primary);
 }
 
-/* The single animation driving both the border and the glow */
 @keyframes spin-border {
     to {
         --angle: 360deg;
@@ -154,378 +170,325 @@ main {
 }
 
 #cart-counter {
-    display: flex;
-    box-sizing:border-box;
+    display: inline-flex;
     align-items: center;
-
-    width: max-content;
-    height: 3em;
-    padding: 0 1em 0 1em;
-    background-color: white;
-    border: none;
-
-    text-align: center;
-    border-radius: 10em;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0 1rem;
+    background-color: var(--panel);
+    border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: 0.9rem;
+    box-sizing: border-box;
+    box-shadow: var(--shadow);
 }
 
 .buy-button {
-    background-color: #F4F7FA;
-    border: 0.11em solid #0E6C9C;
+    background-color: var(--bg);
 }
 
 .product {
+    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
     align-items: center;
-
-    flex: 0 0 10em;
-    height: 28em;
-    padding: 1em;
-
-    border: 0.2em solid #0E6C9C;
-    border-radius: 1em;
-}
-
-#products {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(220px, 1fr));
     gap: 1rem;
-
-    /* --- ADD THESE THREE LINES --- */
-    height: calc(100vh - 80px); /* Adjust 80px to fit your header/padding */
-    overflow-y: scroll;         /* Forces the scrollbar to exist */
-    min-height: 0;              /* Tells the grid 'you are allowed to be smaller than your content' */
-    /* ----------------------------- */
-
-    padding: 1rem;
+    padding: 1.25rem;
     box-sizing: border-box;
+    background: var(--panel);
+    border: var(--border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow);
 }
 
 .product-info {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-
-    border-bottom: 0.2em solid #79848a;
-    padding-bottom: 1em;
-    margin-bottom: 1em;
+    gap: 0.35rem;
+    text-align: center;
+    border-bottom: 0.2rem solid var(--muted);
+    padding-bottom: 1rem;
 }
 
 .product-info h1 {
-    font-size: large;
-    height: min-content;
-    margin: 0.2em;
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.3;
 }
 
-.product-info p {
-    height: min-content;
-    margin: 0.2em;
+.product-info p,
+.product > p {
+    margin: 0;
+}
+
+.product > p {
+    text-align: center;
+    color: var(--text);
 }
 
 .product img {
     display: block;
-    width: max-content;
-    height: 14em;
+    width: min(100%, 13rem);
+    height: 13rem;
+    object-fit: contain;
 }
 
 #cart-panel {
-    grid-column: 5;
-    grid-row: 1 / -1;
-
+    flex: 0 0 22rem;
     display: flex;
-    height: 150%;
     flex-direction: column;
-    gap: 1em;
-    padding: 1em;
+    gap: 1rem;
+    min-height: 0;
+    max-height: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background-color: var(--bg);
+    border: var(--border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
 
-    background-color: #F4F7FA;
-    border-top: 0.2em solid #0E6C9C;
-    border-left: 0.2em solid #0E6C9C;
-    border-bottom: 0.2em solid #0E6C9C;
+.product-cart-item,
+.coupon-cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
 }
 
 .product-cart-item {
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 2em);
-    height: max-content;
-    padding: 1em;
-    background-color: #79848a;
-    color: #F4F7FA;
-
-    border: 0.2em solid #0E6C9C;
-    border-radius: 1em;
-}
-
-.product-cart-item p {
-    align-content: center;
+    background-color: var(--muted);
+    color: var(--bg);
+    border: var(--border-strong);
 }
 
 .coupon-cart-item {
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 2em);
-    height: max-content;
-    padding: 1em;
-    background-color: #F4F7FA;
-    color: #0E6C9C;
-
-    border: 0.2em solid #79848a;
-    border-radius: 1em;
+    background-color: var(--bg);
+    color: var(--primary);
+    border: 0.2rem solid var(--muted);
 }
 
-.product-cart-item p {
-    align-content: center;
+.product-cart-item h3,
+.product-cart-item p,
+.coupon-cart-item h3,
+.coupon-cart-item p {
+    margin: 0;
 }
 
 #notifs {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1em;
-
-    position: absolute;
-    width: 20em;
-    max-height: calc(100vh - 2em);
+    gap: 1rem;
+    position: fixed;
+    top: 5.5rem;
+    left: 1rem;
+    width: min(22rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 6.5rem);
     overflow-y: auto;
-    left: 0;
-    padding: 1em;
+    z-index: 30;
 }
 
 .notif {
-    width: 90%;
-    padding: 1em;
-    border-radius: 1em;
+    padding: 1rem;
+    border-radius: var(--radius-md);
     font-weight: 600;
-
-    box-shadow: 0em 0em 15px 5px #79848aa7;
+    box-shadow: 0 0 15px 5px rgba(121, 132, 138, 0.65);
+    box-sizing: border-box;
 }
 
 .error {
-    background-color: #e5533d;
-    color: #F4F7FA;
+    background-color: var(--danger);
+    color: var(--bg);
 }
 
 .receipt {
-    background-color: #0E6C9C;
-    color: #F4F7FA;
+    background-color: var(--primary);
+    color: var(--bg);
 }
 
 .receipt-header {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
 }
 
 .button-circle {
-    width: 3em;
-    height: 3em;
+    width: 3rem;
+    height: 3rem;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-
-    background-color: white;
+    background-color: var(--panel);
     border: none;
-
     text-align: center;
-    border-radius: 10em;
+    border-radius: 50%;
     font-weight: 600;
-
-    &:hover{
-        cursor: pointer;
-    }
 }
 
-/* 1. Unified Container for the Input + Button row */
+.button-circle:hover {
+    cursor: pointer;
+}
+
 #product-amount-input-box,
 #suggester-money-amount-input-box {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem; /* Space between input and button */
-
-    width: 90%; /* Center within the dialog */
-    margin: 0.5rem auto;
+    gap: 0.75rem;
+    width: 100%;
+    margin: 0.5rem auto 0;
     box-sizing: border-box;
 }
 
-/* 2. Unified Input Styling */
 .product-amount-dialog input,
-.suggester-money-amount-dialog input {
-    flex: 1; /* Grow to fill space */
-    min-width: 0; /* Prevents overflow */
-    height: 3.2em;
-    padding: 0 1.25em;
-
-    background: white;
-    color: #1f2a33;
-    border: 0.11em solid #0E6C9C;
-    border-radius: 10em;
-
+.suggester-money-amount-dialog input,
+#login-inputs input {
+    flex: 1;
+    min-width: 0;
+    height: 3.75rem;
+    padding: 0 1.25rem;
+    background: var(--panel);
+    color: var(--text);
+    border: var(--border-soft);
+    border-radius: var(--radius-pill);
     font-size: 0.95rem;
     font-weight: 600;
     outline: none;
     box-sizing: border-box;
 }
 
-/* 3. Button Adjustments inside Dialogs */
 .product-amount-dialog .button,
 .suggester-money-amount-dialog #suggest-button {
-    width: auto; /* Shrink to fit text */
-    flex: 0 0 auto; /* Don't stretch the button */
-    height: 3.2em; /* Match input height perfectly */
-    padding: 0 1.5em;
-    white-space: nowrap; /* Prevent "Auto-buy" from wrapping */
+    width: auto;
+    flex: 0 0 auto;
+    height: 3.2rem;
+    padding: 0 1.5rem;
+    white-space: nowrap;
 }
 
-/* 4. Dialog Box Tweaks */
+.product-amount-dialog,
+.suggester-money-amount-dialog,
+#login-dialog,
+#coupon-selection {
+    margin: auto;
+    background: var(--bg);
+    border: var(--border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    box-sizing: border-box;
+}
+
 .product-amount-dialog,
 .suggester-money-amount-dialog {
+    position: fixed;
     inset: 0;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    width: min(500px, 95vw); /* Responsive width */
-
-    background: #F4F7FA;
-    border: 0.2em solid #0E6C9C;
-    border-radius: 1.25em;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-
-    /* Crucial: allow the 'Noticeable Glow' to bleed outside the box */
+    width: min(31.25rem, calc(100vw - 2rem));
+    padding: 1.5rem;
     overflow: visible;
-    padding-bottom: 1rem;
 }
 
-
-/* --- Login / signup block --- */
-
 #login-dialog {
-    inset: 0;
-    margin: auto;
+    width: min(32rem, calc(100vw - 2rem));
+    padding: 2rem;
+}
 
-    display: flex;
-    flex-direction: column;
-    width: 50vw;
-    height: 35vh;
-    align-items: center;
-    justify-content: center;
+#login-dialog::backdrop,
+.product-amount-dialog::backdrop,
+.suggester-money-amount-dialog::backdrop,
+#coupon-selection::backdrop {
+    background: rgba(14, 108, 156, 0.2);
+}
+
+#login-dialog h2 {
+    margin: 0 0 1rem;
+    text-align: center;
 }
 
 #login-inputs,
 #login-signup {
     display: flex;
-    width: 25em;
-    gap: 0.75em;
-}
-
-/* card wrapper effect for both rows */
-#login-inputs {
-    flex-direction: column;
-
-    padding: 1.25em;
-
-    background-color: #F4F7FA;
-    border: 0.2em solid #0E6C9C;
-    border-radius: 1.25em;
-
-    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-}
-
-/* inputs styled to match your dialogs/buttons */
-#login-inputs input {
     width: 100%;
-    height: 3em;
-    padding: 0 1em;
-
-    background: white;
-    color: #1f2a33;
-
-    border: 0.11em solid #0E6C9C;
-    border-radius: 10em;
-
-    font-size: 0.95rem;
-    font-weight: 600;
-
-    outline: none;
     box-sizing: border-box;
 }
 
+#login-inputs {
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#login-dialog #login-inputs input {
+    display: block;
+    width: 100%;
+    min-height: 4.5rem;
+    height: 4.5rem;
+    padding: 0 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.2;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 #login-inputs input::placeholder {
-    color: #79848a;
+    color: var(--muted);
     font-weight: 500;
 }
 
-/* button row */
 #login-signup {
     align-items: center;
     justify-content: center;
-
-    margin-top: 0.75em;
+    gap: 0.75rem;
+    margin-top: 1rem;
 }
 
 #login-signup p {
-    margin: 0 0.5em;
+    margin: 0;
     font-weight: 600;
-    color: #79848a;
+    color: var(--muted);
 }
 
-/* make signup visually secondary, consistent with buy-button */
 #login-button,
 #signup-button {
-    background-color: #F4F7FA;
-    border: 0.11em solid #0E6C9C
+    background-color: var(--bg);
 }
 
 #coupon-selection {
     position: fixed;
     inset: 0;
-    margin: auto;
-
     display: flex;
     flex-direction: column;
     gap: 1rem;
-
+    width: min(32.5rem, calc(100vw - 2rem));
+    max-height: min(32.5rem, calc(100vh - 2rem));
     padding: 1.5rem;
-    width: min(520px, 90vw);
-    height: min(520px, 90vh);
-
-    background: #F4F7FA;
-    border: 0.2em solid #0E6C9C;
-    border-radius: 1.25em;
-
-    box-shadow: 0 10px 35px rgba(0,0,0,0.18);
+    overflow-y: auto;
 }
 
-/* Title bar container */
 .coupons-title-bar {
     display: flex;
-    justify-content: space-between; /* title left, button right */
+    justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem;
-    background-color: #0E6C9C;      /* subtle card-like background */
-    border-bottom: 1px solid #F4F7FA; /* light separator line */
-    border-top-left-radius: 12px;   /* rounded top corners */
-    border-top-right-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* soft shadow for elevation */
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--primary);
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Title text */
 .coupons-title-bar .coupons-ad {
-    margin: 0;                     /* remove default h3 margin */
-    font-size: 1.125rem;           /* slightly larger text */
-    font-weight: 600;              /* bold */
-    color: #F4F7FA;                /* dark gray for readability */
-    line-height: 1.4;              /* improve spacing if multi-line */
-}
-
-/* Optional: make text wrap nicely on small screens */
-.coupons-title-bar .coupons-ad {
-    flex: 1;                       /* take available space */
+    flex: 1;
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--bg);
+    line-height: 1.4;
     word-break: break-word;
 }
 
@@ -533,20 +496,17 @@ main {
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
-
-    padding: 1.1rem 1.25rem;
     gap: 1rem;
-
-    background: white;
+    padding: 1.1rem 1.25rem;
+    background: var(--panel);
     border-radius: 0.9rem;
-    border: 2px dashed #0E6C9C;
-
+    border: 2px dashed var(--primary);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .coupon:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .coupon-info {
@@ -556,65 +516,82 @@ main {
 }
 
 .coupon-name {
+    margin: 0;
     font-size: 1.35rem;
     font-weight: 700;
-    margin: 0;
 }
 
 .coupon-description {
+    margin: 0;
     font-size: 0.95rem;
     color: #5c6a73;
-    margin: 0;
 }
 
 .purchase-button {
     width: 100%;
-    border-radius: 6px;
-    font-weight: 1000;
-    font-size: 1em;
-    border: 0.11em solid #0E6C9C
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    border: var(--border-soft);
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 960px) {
     main {
-        width: 100%;
-        height: 100vh;
-
-        display: grid;
-
-        /* left grid columns + one fixed right column */
-        grid-template-columns: minmax(0, 2fr) minmax(220px, 260px);
-        grid-template-rows: auto 1fr;
-
-        gap: 1rem;
+        flex-direction: column;
     }
 
-    main > :not(#cart-panel) {
-        grid-column: 1;
+    #products-container {
+        order: 1;
+    }
+
+    #products-container > div {
+        max-width: none;
     }
 
     #cart-panel {
-        grid-column: 2;
-        grid-row: 1 / -1;
-
-        display: flex;
-        flex-direction: column;
-        gap: 1em;
-        padding: 1em;
-
-        background-color: #F4F7FA;
-        border-top: 0.2em solid #0E6C9C;
-        border-left: 0.2em solid #0E6C9C;
-        border-bottom: 0.2em solid #0E6C9C;
+        order: 2;
+        flex-basis: auto;
+        width: 100%;
+        max-height: none;
     }
 
-    #login-signup {
+    #notifs {
+        top: 4.75rem;
+    }
+}
+
+@media (max-width: 640px) {
+    #header {
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 1rem;
+    }
+
+    main {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    #products-container > div {
+        flex-basis: 100%;
+        min-width: 0;
+    }
+
+    #login-signup,
+    #product-amount-input-box,
+    #suggester-money-amount-input-box,
+    .coupon {
         flex-direction: column;
-        gap: 0.5em;
+        grid-template-columns: 1fr;
     }
 
     #login-signup p {
         display: none;
     }
-}
 
+    .product-cart-item,
+    .coupon-cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

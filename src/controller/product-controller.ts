@@ -3,9 +3,11 @@ import Product from "../model/product/product.ts";
 import type CartController from "./cart-controller.ts";
 import ProductAmountDialogView from "../view/product/product-amount-dialog-view.ts";
 import {Measurements} from "../model/product/measurements.ts";
+import ProductsContainerView from "../view/product/products-container-view.ts";
 
 export default class ProductController {
     #cartController: CartController;
+    #productContainerView: ProductsContainerView
     #productViews: Array<ProductView>;
     #productAmountDialogView?: ProductAmountDialogView;
 
@@ -13,6 +15,8 @@ export default class ProductController {
         this.#cartController = cartController;
         this.#productViews = new Array<ProductView>();
 
+
+        this.#productContainerView = new ProductsContainerView();
         Product.fetchInventory().then(products => {
             products.forEach(p => this.#productViews.push(new ProductView(this, p)));
         });
