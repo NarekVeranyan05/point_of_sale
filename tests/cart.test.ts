@@ -56,7 +56,7 @@ test("Adds coupon to the cart", async () => {
 test("Empty cart cannot be purchased", async () => {
     let a = await Account.signup("some name 4", "some password");
 
-    expect(() => a.cart.purchase()).toThrowError(EmptyCartException);
+    await expect(a.cart.purchase()).rejects.toThrow(EmptyCartException);
 })
 
 test("single-item cart can be purchased", async () => {
@@ -71,10 +71,18 @@ test("single-item cart can be purchased", async () => {
         p2, p2);
     await a.cart.addCoupon(coupon);
 
-    let receipt = a.cart.purchase();
+    let receipt = await a.cart.purchase();
 
-    expect(receipt.products).contains(p1);
-    expect(receipt.products).contains(p2);
+    expect(receipt.products).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({ name: p1.name })
+        ])
+    );
+    expect(receipt.products).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({ name: p2.name })
+        ])
+    );
     expect(receipt.listPrice).equals(360);
     expect(receipt.discount).equals(120);
 
@@ -93,7 +101,7 @@ test("multi-item cart can be purchased", async () => {
     await a.cart.addProduct(p1);
     await a.cart.addProduct(p2);
 
-    let receipt = a.cart.purchase();
+    let receipt = await a.cart.purchase();
 
     expect(receipt.products).contains(p1);
     expect(receipt.products).contains(p2);

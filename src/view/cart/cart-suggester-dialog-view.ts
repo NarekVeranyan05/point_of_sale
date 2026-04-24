@@ -44,7 +44,7 @@ export default class CartSuggesterDialogView {
         this.#dialog.querySelector("button")!.addEventListener("click", async () => {
             const amt = this.#dialog.querySelector("input")!.valueAsNumber;
 
-            this.#controller.autoBuy(amt);
+            await this.#controller.addProductsUpToAmount(amt);
         });
     }
 }

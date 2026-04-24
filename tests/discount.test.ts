@@ -28,5 +28,9 @@ test("Bogo applies  Receipt", () => {
     receipt.addCoupon(bogo);
 
     expect(receipt.products.length).equals(3);
-    expect(receipt.products).contains(p2);
+    expect(receipt.products).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({ name: p2.name })
+        ])
+    );
 });

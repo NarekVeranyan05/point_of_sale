@@ -1,90 +1,35 @@
 ---
-title: Domain Model of the Point of Sale System
-author: Narek Veranyan (veranyan@myumanitoba.ca)
-date: January 18, 2026
+title: Markov Model Description
+date: April 9, 2026
+author: Narek Veranyan
 ---
 
-## Domain Model
+# How to train the model
 
-> Changes
-> * replaced the `ProductType` enumeration with TrackSuit and Shoes classes
-> * turned Product into an abstract class
-
-```mermaid
-classDiagram
-    class Profile {
-        -~string name
-        -~Cart cart
-        -Array~Receipt~ receipts
-    }
-
-    Profile "1" o--* "1" Cart
-    Profile "1" o--* "*" Receipt
-
-    class Product {
-        <<abstract>>
-
-        -~number id
-        -~?Cart cart
-        -~?Receipt receipt
-        -string name
-        -number price
-    }
-
-    note for Product "Class Invariants:
-        price > 0
-    "
-
-    class Tracksuit { }
-
-    Tracksuit --|> Product
-
-    class Shoes { }
-
-    Shoes --|> Product
-
-    class Cart {
-        -~number id
-        -~Profile profile
-        -Map~Product, number~ products
-        -Array~Coupon~ coupons
-
-        +addProduct(Product p, number amt)
-        +checkout() Receipt
-    }
-
-    Cart "1" o--* "*" Product
-
-    class Receipt {
-        -~number id
-        -~Profile profile
-        -Map~Product, number~ products
-        -number discount
-        -number totalPrice
-    }
-
-    Receipt "1" o--* "+" Product    
-
-    note for Receipt "Class Invariants:
-        products.length > 0
-        totalPrice > 0
-    "
-
-    class Coupon {
-        <<interface>>
-
-        +applyCoupon(Cart c) 
-    }
-
-    class Discount { }
-    Discount --|> Coupon
-
-    class Bogo { }
-
-    Bogo --|> Coupon
+In order to train the model (i.e. run the training program), open the terminal at the root directory for the project
+and type the following command:
+```
+npm run train:markov
 ```
 
+# Training results
 
+The output of the training program is in the `markov-model.csv` file, found in `./src/model/assets/markov-model`. The csv file is
+to be interpreted as follows:
+* the first ten rows comprise the adjacency matrix that reflects the number of times a transition from i-th row to the
+j-th column has occurred.
 
+* below the matrix, there is a row vector comprising the number of times a transition happened from the i-th row. Observe 
+that the sum of the entries in each row in the adjacency matrix is equal to the corresponding entry in this vector.
 
-
+* The products associated with each row are the following:
+ - row 0: letter a:     "Gary's Tracks",
+ - row 1: letter b:     "The Gopnik",
+ - row 2: letter c:     "Greta's Runners",
+ - row 3: letter d:     "Seeds of Doubt",
+ - row 4: letter e:     "The Harevan",
+ - row 5: letter f:     "The Hopar",
+ - row 6: letter g:     "Dad's Slippers",
+ - row 7: letter h:     "Lada Station Slippers",
+ - row 8: letter i:     "Ararat Slippers",
+ - row 9: letter j:     "Tatik's Pickled Everything" 

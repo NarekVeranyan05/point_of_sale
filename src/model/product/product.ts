@@ -1,6 +1,6 @@
 import {assert, AssertionError} from "../../assertions";
 import db from "../assets/connection.ts";
-import type {StorageType} from "../../../../../../../../Desktop/resubmissions/point_of_sale_2_implementation/src/model/assets/storage-type.ts";
+import type {StorageType} from "../assets/markov-model/storage-type.ts";
 
 /**
  * The Product class represents an item that can be added to a {@link Cart} 
@@ -14,7 +14,7 @@ export default abstract class Product {
     #description: string;
     #price: number;
     #quantity: number;
-
+    
     /**
      * Factory method for creating a Product
      * @param type the type of the Product (class name)

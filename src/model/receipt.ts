@@ -3,7 +3,7 @@ import Product from "./product/product";
 import {Temporal} from "@js-temporal/polyfill";
 import Coupon from "./coupon/coupon.ts";
 import db from "./assets/connection.ts";
-import {StorageType} from "../../../../../../../Desktop/resubmissions/point_of_sale_2_implementation/src/model/assets/storage-type.ts";
+import {StorageType} from "./assets/markov-model/storage-type.ts";
 import type Listener from "../listener.ts";
 
 /**
