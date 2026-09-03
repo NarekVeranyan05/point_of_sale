@@ -6,7 +6,7 @@ author: Narek Veranyan
 
 # Vision Statement
 
-This project implements a point-of-sale (POS) system that enables cashier authentication (sign-up and login), product selection, coupon application, and cart management. The customer can complete checkout and generate a purchase receipt.
+Paypoint is a point-of-sale (POS) system that enables cashier authentication (sign-up and login), product selection, coupon application, and cart management. The customer can complete checkouts and generate purchase receipts.
 
 ---
 
