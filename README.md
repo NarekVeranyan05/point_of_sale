@@ -12,11 +12,20 @@ This project implements a point-of-sale (POS) system that enables cashier authen
 
 # How to Start the Program
 
-To launch the application, execute the following commands in the terminal:
+To launch the application, follow these steps:
 
-* `npm install`
-* `npx vite`
-* Open the local URL displayed in the terminal output
+1. Make sure Node.js 22 or newer is installed.
+   If necessary, download the latest LTS version from https://nodejs.org/.
+
+2. Install dependencies:
+
+   npm install
+
+3. Start the development server:
+
+   npx vite
+
+4. Open the local URL displayed in the terminal output
 
 ---
 
